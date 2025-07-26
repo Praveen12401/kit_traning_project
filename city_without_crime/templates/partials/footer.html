@@ -1,0 +1,30 @@
+<!-- templates/partials/_footer.html -->
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>City Without Crime</h5>
+                <p>A platform connecting citizens and police stations for a safer community.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'home' %}" class="text-white">Home</a></li>
+                    <li><a href="{% url 'complaint_list' %}" class="text-white">File a Complaint</a></li>
+                    <li><a href="{% url 'criminal_list' %}" class="text-white">Criminal Database</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-phone me-2"></i> Emergency: 100</li>
+                    <li><i class="fas fa-envelope me-2"></i> info@citywithoutcrime.com</li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center">
+            <p class="mb-0">&copy; 2023 City Without Crime. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
