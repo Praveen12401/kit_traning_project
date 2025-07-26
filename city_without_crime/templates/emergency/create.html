@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Emergency Alert{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>New Emergency Alert</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_title" class="form-label">Alert Title</label>
+                            {{ form.title }}
+                            <small class="text-muted">Brief description of the emergency</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_description" class="form-label">Details</label>
+                            {{ form.description }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Affected Stations</label>
+                            <div class="row">
+                                {% for station in form.stations %}
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        {{ station }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            {{ form.is_active }}
+                            <label class="form-check-label" for="id_is_active">
+                                This is an active emergency
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'emergency_list' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-bullhorn me-1"></i> Issue Alert
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

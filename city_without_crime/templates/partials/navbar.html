@@ -10,20 +10,20 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    <a class="nav-link text-white" href="{% url 'home' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'complaint_list' %}">Complaints</a>
+                    <a class="nav-link text-white" href="{% url 'complaint_list' %}">Complaints</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'criminal_list' %}">Criminals</a>
+                    <a class="nav-link text-white" href="{% url 'criminal_list' %}">Criminals</a>
                 </li>
                 {% if user.is_police or user.is_admin %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'station_list' %}">Police Stations</a>
+                    <a class="nav-link text-white" href="{% url 'station_list' %}">Police Stations</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'emergency_list' %}">Emergency</a>
+                    <a class="nav-link text-white" href="{% url 'emergency_list' %}">Emergency</a>
                 </li>
                 {% endif %}
             </ul>
@@ -31,19 +31,19 @@
                 {% if user.is_authenticated %}
                     {% if user.is_admin %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                            <a class="nav-link text-white" href="{% url 'admin_dashboard' %}">
                                 <i class="fas fa-tachometer-alt me-1"></i>Admin Dashboard
                             </a>
                         </li>
                     {% elif user.is_police %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'police_dashboard' %}">
+                            <a class="nav-link text-white" href="{% url 'police_dashboard' %}">
                                 <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                             </a>
                         </li>
                     {% endif %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle me-1"></i>{{ user.username }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}File New Complaint{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-exclamation-circle me-2"></i>File New Complaint</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_station" class="form-label">Police Station</label>
+                            {{ form.station }}
+                            <div class="invalid-feedback">
+                                Please select a police station.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_title" class="form-label">Complaint Title</label>
+                            {{ form.title }}
+                            <div class="invalid-feedback">
+                                Please provide a title for your complaint.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_description" class="form-label">Detailed Description</label>
+                            {{ form.description }}
+                            <div class="invalid-feedback">
+                                Please describe your complaint in detail.
+                            </div>
+                            <small class="text-muted">Be as specific as possible about what happened</small>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label for="id_location" class="form-label">Incident Location</label>
+                                {{ form.location }}
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="id_evidence" class="form-label">Evidence (Optional)</label>
+                                {{ form.evidence }}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'complaint_list' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-1"></i> Submit Complaint
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.from(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+
+//     // Location autocomplete
+//     const locationInput = document.getElementById('id_location');
+//     if (locationInput) {
+//         new google.maps.places.Autocomplete(locationInput, {
+//             types: ['geocode'],
+//             componentRestrictions: {country: 'in'}
+//         });
+//     }
+// });
+</script>
+// <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+{% endblock %}

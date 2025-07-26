@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ station.name }} Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0"><i class="fas fa-building me-2"></i>{{ station.name }}</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-info-circle me-2"></i>Station Information</h5>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item">
+                            <strong>Jurisdiction:</strong> {{ station.jurisdiction }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Contact Number:</strong> {{ station.contact_number }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Email:</strong> {{ station.email }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Registered On:</strong> {{ station.created_at|date:"F j, Y" }}
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-6">
+                    <h5><i class="fas fa-map-marker-alt me-2"></i>Address</h5>
+                    <p>{{ station.address|linebreaks }}</p>
+                    
+                    <div class="mt-4">
+                        <div class="ratio ratio-16x9">
+                            <iframe src="https://maps.google.com/maps?q={{ station.address|urlencode }}&output=embed" 
+                                    allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            {% if user.is_admin %}
+            <a href="#" class="btn btn-outline-primary me-2">
+                <i class="fas fa-edit me-1"></i> Edit Station
+            </a>
+            {% endif %}
+            <a href="{% url 'station_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

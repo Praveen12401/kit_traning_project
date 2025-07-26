@@ -37,3 +37,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+
+
+// static/js/main.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-dismiss alerts with data-auto-dismiss attribute
+    const alerts = document.querySelectorAll('.alert[data-auto-dismiss]');
+    
+    alerts.forEach(alert => {
+        const delay = parseInt(alert.getAttribute('data-auto-dismiss'));
+        setTimeout(() => {
+            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+            bsAlert.close();
+        }, delay);
+    });
+});

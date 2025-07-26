@@ -14,9 +14,10 @@ def user_login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
-            print(user)
+            
             if user is not None:
                 login(request, user)
+                messages.success(request, f'Welcome back, {username}!')  # Add this line
                 if user.is_admin:
                     return redirect('admin_dashboard')
                 elif user.is_police:
@@ -67,6 +68,7 @@ def complaint_list(request):
 def create_complaint(request):
     if request.method == 'POST':
         form = ComplaintForm(request.POST, request.FILES)
+         
         if form.is_valid():
             complaint = form.save(commit=False)
             complaint.user = request.user
@@ -74,6 +76,7 @@ def create_complaint(request):
             messages.success(request, 'Complaint submitted successfully!')
             return redirect('complaint_list')
     else:
+        
         form = ComplaintForm()
     return render(request, 'complaints/create.html', {'form': form})
 
@@ -119,6 +122,11 @@ def criminal_detail(request, pk):
 def station_list(request):
     stations = PoliceStation.objects.all().order_by('name')
     return render(request, 'police_stations/list.html', {'stations': stations})
+
+@login_required
+def station_detail(request, pk):
+    station = get_object_or_404(PoliceStation, pk=pk)
+    return render(request, 'police_stations/detail.html', {'station': station})
 
 @login_required
 def create_station(request):

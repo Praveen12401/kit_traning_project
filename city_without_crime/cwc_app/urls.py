@@ -24,6 +24,7 @@ urlpatterns = [
     # Police Stations
     path('stations/', views.station_list, name='station_list'),
     path('stations/create/', views.create_station, name='create_station'),
+    path('stations/<int:pk>/', views.station_detail, name='station_detail'),
     
     # Emergency
     path('emergency/', views.emergency_list, name='emergency_list'),
