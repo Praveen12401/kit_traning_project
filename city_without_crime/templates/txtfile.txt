@@ -1,0 +1,4 @@
+username - password -typeUser
+praveen  -Ankit123@ - user
+admin  -Admin123@1 - admin
+praveen1020 -Ankit123@ -police

@@ -169,9 +169,42 @@ def create_emergency(request):
         form = EmergencyAlertForm()
     return render(request, 'emergency/create.html', {'form': form})
 
-# Dashboard Views
+# # Dashboard Views
+# @login_required
+# def admin_dashboard(request):
+#     if not request.user.is_admin:
+#         messages.error(request, 'You are not authorized to view this page.')
+#         return redirect('home')
+    
+#     stats = {
+#         'total_stations': PoliceStation.objects.count(),
+#         'total_complaints': Complaint.objects.count(),
+#         'total_criminals': Criminal.objects.count(),
+#         'active_alerts': EmergencyAlert.objects.filter(is_active=True).count(),
+#     }
+#     return render(request, 'dashboard/admin.html', {'stats': stats})
+
+# @login_required
+# def police_dashboard(request):
+#     if not request.user.is_police:
+#         messages.error(request, 'You are not authorized to view this page.')
+#         return redirect('home')
+    
+#     station = request.user.station
+#     stats = {
+#         'pending_complaints': Complaint.objects.filter(station=station, status='PENDING').count(),
+#         'in_progress_complaints': Complaint.objects.filter(station=station, status='IN_PROGRESS').count(),
+#         'resolved_complaints': Complaint.objects.filter(station=station, status='RESOLVED').count(),
+#         'unread_messages': StationMessage.objects.filter(receiver=station, is_read=False).count(),
+#     }
+#     return render(request, 'dashboard/police.html', {'stats': stats})
+
+
+
+
 @login_required
 def admin_dashboard(request):
+    print("DEBUG: Entered admin_dashboard view")  # Add this line
     if not request.user.is_admin:
         messages.error(request, 'You are not authorized to view this page.')
         return redirect('home')
@@ -182,7 +215,14 @@ def admin_dashboard(request):
         'total_criminals': Criminal.objects.count(),
         'active_alerts': EmergencyAlert.objects.filter(is_active=True).count(),
     }
-    return render(request, 'dashboard/admin.html', {'stats': stats})
+    print(stats,'ram')
+    
+    recent_complaints = Complaint.objects.order_by('-created_at')[:5]
+    
+    return render(request, 'dashboard/admin.html', {
+        'stats': stats,
+        'recent_complaints': recent_complaints
+    })
 
 @login_required
 def police_dashboard(request):
@@ -197,4 +237,18 @@ def police_dashboard(request):
         'resolved_complaints': Complaint.objects.filter(station=station, status='RESOLVED').count(),
         'unread_messages': StationMessage.objects.filter(receiver=station, is_read=False).count(),
     }
-    return render(request, 'dashboard/police.html', {'stats': stats})
+    
+    recent_messages = StationMessage.objects.filter(
+        Q(receiver=station) | Q(sender=station)
+    ).order_by('-created_at')[:3]
+    
+    active_alerts = EmergencyAlert.objects.filter(
+        is_active=True,
+        stations=station
+    )
+    
+    return render(request, 'dashboard/police.html', {
+        'stats': stats,
+        'recent_messages': recent_messages,
+        'active_alerts': active_alerts
+    })
