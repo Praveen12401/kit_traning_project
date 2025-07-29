@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 from .models import *
 from .forms import *
 
@@ -54,6 +55,36 @@ def user_logout(request):
 def home(request):
     emergency_alerts = EmergencyAlert.objects.filter(is_active=True).order_by('-created_at')[:5]
     return render(request, 'home/index.html', {'emergency_alerts': emergency_alerts})
+
+def message_list(request):
+    if not request.user.is_police:
+        return redirect('home')
+    
+    station = request.user.station
+    message = StationMessage.objects.filter(
+        Q(receiver=station) | Q(sender=station)
+    ).order_by('-created_at')
+    
+    return render(request, 'dashboard/message_list.html', {'message': message})
+# complaint update for police and admin
+def update_complaint_status(request, pk):
+    if not request.user.is_police:
+        messages.error(request, "You don't have permission to update complaint status.")
+        return redirect('home')
+    
+    complaint = get_object_or_404(Complaint, pk=pk)
+    
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        
+        if new_status in dict(Complaint.STATUS_CHOICES).keys():
+            complaint.status = new_status
+            complaint.save()
+            messages.success(request, f"Complaint status updated to {complaint.get_status_display()}.")
+        else:
+            messages.error(request, "Invalid status selected.")
+    
+    return redirect('complaint_detail', pk=complaint.pk)
 
 # Complaint Views
 @login_required
@@ -169,35 +200,7 @@ def create_emergency(request):
         form = EmergencyAlertForm()
     return render(request, 'emergency/create.html', {'form': form})
 
-# # Dashboard Views
-# @login_required
-# def admin_dashboard(request):
-#     if not request.user.is_admin:
-#         messages.error(request, 'You are not authorized to view this page.')
-#         return redirect('home')
-    
-#     stats = {
-#         'total_stations': PoliceStation.objects.count(),
-#         'total_complaints': Complaint.objects.count(),
-#         'total_criminals': Criminal.objects.count(),
-#         'active_alerts': EmergencyAlert.objects.filter(is_active=True).count(),
-#     }
-#     return render(request, 'dashboard/admin.html', {'stats': stats})
-
-# @login_required
-# def police_dashboard(request):
-#     if not request.user.is_police:
-#         messages.error(request, 'You are not authorized to view this page.')
-#         return redirect('home')
-    
-#     station = request.user.station
-#     stats = {
-#         'pending_complaints': Complaint.objects.filter(station=station, status='PENDING').count(),
-#         'in_progress_complaints': Complaint.objects.filter(station=station, status='IN_PROGRESS').count(),
-#         'resolved_complaints': Complaint.objects.filter(station=station, status='RESOLVED').count(),
-#         'unread_messages': StationMessage.objects.filter(receiver=station, is_read=False).count(),
-#     }
-#     return render(request, 'dashboard/police.html', {'stats': stats})
+   
 
 
 
@@ -223,9 +226,10 @@ def admin_dashboard(request):
         'stats': stats,
         'recent_complaints': recent_complaints
     })
-
+   
 @login_required
 def police_dashboard(request):
+    print('debug')
     if not request.user.is_police:
         messages.error(request, 'You are not authorized to view this page.')
         return redirect('home')
@@ -237,6 +241,7 @@ def police_dashboard(request):
         'resolved_complaints': Complaint.objects.filter(station=station, status='RESOLVED').count(),
         'unread_messages': StationMessage.objects.filter(receiver=station, is_read=False).count(),
     }
+    
     
     recent_messages = StationMessage.objects.filter(
         Q(receiver=station) | Q(sender=station)

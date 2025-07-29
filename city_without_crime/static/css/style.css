@@ -1,7 +1,7 @@
 /* static/css/style.css */
 :root {
     --primary-color: #0d6efd;
-    --secondary-color: #6c757d;
+    --secondary-color: #f03848;
     --success-color: #198754;
     --danger-color: #dc3545;
     --warning-color: #ffc107;
@@ -35,6 +35,7 @@ body {
     border-radius: 50px;
     padding: 8px 20px;
     font-weight: 500;
+     
 }
 
 .btn-primary {
@@ -235,16 +236,34 @@ body {
     margin-top: 15px;
 }
 
-.btn {
+ 
+
+.btn i {
+    margin-right: 5px;
+}
+
+/* Specific selector for your button */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Specific selector for your button */
+.btn.btn-outline-primary {
     display: inline-flex;
     align-items: center;
     padding: 8px 15px;
     border-radius: 4px;
     text-decoration: none;
-    color: white;
+    color: #0d6efd; /* Bootstrap's primary blue color */
+    border: 1px solid #0d6efd; /* Add border for outline effect */
+    background-color: transparent; /* Ensure background is transparent */
 }
 
-.btn i {
-    margin-right: 5px;
+/* Hover state */
+.btn.btn-outline-primary:hover {
+    color: white;
+    background-color: #0d6efd;
 }
  
