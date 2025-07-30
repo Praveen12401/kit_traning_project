@@ -34,6 +34,7 @@ def user_login(request):
 def user_register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
+        print('form',form)
         if form.is_valid():
             user = form.save()
             login(request, user)

@@ -16,13 +16,14 @@
                         
                         <div class="mb-3">
                             <label for="id_title" class="form-label">Alert Title</label>
-                            {{ form.title }}
-                            <small class="text-muted">Brief description of the emergency</small>
+                            {{ form.title|safe}}
+                           
                         </div>
                         
                         <div class="mb-3">
                             <label for="id_description" class="form-label">Details</label>
                             {{ form.description }}
+                             <small class="text-muted">Brief description of the emergency</small>
                         </div>
                         
                         <div class="mb-3">
