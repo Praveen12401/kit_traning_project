@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     });
     
-    // Auto-dismiss alerts after 5 seconds
-    var alerts = document.querySelectorAll('.alert');
-    alerts.forEach(function(alert) {
-        setTimeout(function() {
-            var bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        }, 5000);
-    });
+    // // Auto-dismiss alerts after 5 seconds
+    // var alerts = document.querySelectorAll('.alert');
+    // alerts.forEach(function(alert) {
+    //     setTimeout(function() {
+    //         var bsAlert = new bootstrap.Alert(alert);
+    //         bsAlert.close();
+    //     }, 5000);
+    // });
     
     // Form validation feedback
     var forms = document.querySelectorAll('.needs-validation');

@@ -92,6 +92,7 @@ def update_complaint_status(request, pk):
 def complaint_list(request):
     if request.user.is_police or request.user.is_admin:
         complaints = Complaint.objects.filter(station=request.user.station).order_by('-created_at')
+         
     else:
         complaints = Complaint.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'complaints/list.html', {'complaints': complaints})
@@ -230,7 +231,7 @@ def admin_dashboard(request):
    
 @login_required
 def police_dashboard(request):
-    print('debug')
+    
     if not request.user.is_police:
         messages.error(request, 'You are not authorized to view this page.')
         return redirect('home')
@@ -242,7 +243,8 @@ def police_dashboard(request):
         'resolved_complaints': Complaint.objects.filter(station=station, status='RESOLVED').count(),
         'unread_messages': StationMessage.objects.filter(receiver=station, is_read=False).count(),
     }
-    
+  
+    recent_complaints = Complaint.objects.order_by('-created_at')[:5]
     
     recent_messages = StationMessage.objects.filter(
         Q(receiver=station) | Q(sender=station)
@@ -256,5 +258,6 @@ def police_dashboard(request):
     return render(request, 'dashboard/police.html', {
         'stats': stats,
         'recent_messages': recent_messages,
-        'active_alerts': active_alerts
+        'active_alerts': active_alerts,
+        'recent_complaints':recent_complaints
     })

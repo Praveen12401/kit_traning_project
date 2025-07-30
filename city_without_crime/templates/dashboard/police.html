@@ -165,11 +165,11 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Page level plugins -->
-<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+{% comment %} <!-- Page level plugins -->
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script> {% endcomment %}
 
 <!-- Page level custom scripts -->
-<script>
+{% comment %} <script>
 // Bar Chart for Complaints
 var ctx = document.getElementById("complaintsChart");
 var complaintsChart = new Chart(ctx, {
@@ -237,5 +237,5 @@ var complaintsChart = new Chart(ctx, {
         },
     }
 });
-</script>
+</script> {% endcomment %}
 {% endblock %}
