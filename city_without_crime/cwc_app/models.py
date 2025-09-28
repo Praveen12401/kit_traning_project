@@ -12,7 +12,7 @@ class PoliceStation(models.Model):
     address = models.TextField()
     contact_number = models.CharField(max_length=15)
     email = models.EmailField()
-    jurisdiction = models.CharField(max_length=100)
+    jurisdiction = models.CharField(max_length=100)   
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
@@ -50,7 +50,7 @@ class Complaint(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     location = models.CharField(max_length=200)
-    pincode = models.PositiveIntegerField(max_length=6,blank=True, null=True)
+    pincode = models.PositiveIntegerField(blank=True, null=True)
     evidence = models.FileField(upload_to='complaint_evidence/',  null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)

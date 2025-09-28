@@ -13,10 +13,20 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f5f5;
+     
+    padding-top: 50px !important; /* Navbar ki height ke hisab se */
+    margin: 0;
+    position: relative;
+    
+         
+        
+     
 }
+/* Main Content */
+  
 
 .hero-section {
-    background: linear-gradient(135deg, var(--primary-color), #0b5ed7);
+   background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
 .card {
@@ -35,7 +45,6 @@ body {
     border-radius: 50px;
     padding: 8px 20px;
     font-weight: 500;
-     
 }
 
 .btn-primary {
@@ -46,10 +55,53 @@ body {
 .btn-primary:hover {
     background-color: #0b5ed7;
     border-color: #0b5ed7;
+    
 }
 
-.navbar {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+/* Fixed Navbar Styles with Increased Font Size */
+ .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    
+    width: 100%;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    padding: 3px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    padding: 2px 2%;
+    background: linear-gradient(135deg, #4e00a8 0%, #1a5fd8 100%);
+}
+
+/* Navbar Font Size Increase */
+.navbar-brand {
+    font-size: 2rem !important;
+    font-weight: 700;
+}
+
+.navbar-nav .nav-link {
+    font-size: 1.2rem !important;
+    font-weight: 500;
+}
+
+.navbar-nav .dropdown-toggle {
+    font-size: 1.2rem !important;
+}
+
+.dropdown-item {
+    font-size: 1.1rem !important;
+}
+.dropdown-item .nav-link:hover {
+    font-size: 1.1rem !important;
+    background: #0d6efd;
 }
 
 .navbar-brand {
@@ -58,6 +110,7 @@ body {
 
 .footer {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
 }
 
 /* Custom form styling */
@@ -73,9 +126,7 @@ body {
 }
 
 /* Alert customization */
-.alert {
-    border-radius: 10px;
-}
+ 
 
 /* Table styling */
 .table {
@@ -93,9 +144,20 @@ body {
     .hero-section img {
         max-width: 80%;
     }
+    
+    /* Mobile navbar font size */
+    .navbar-brand {
+        font-size: 1.6rem !important;
+    }
+    
+    .navbar-nav .nav-link {
+        font-size: 1.1rem !important;
+    }
+    
+    body {
+        padding-top: 70px;
+    }
 }
-
-
 
 /* static/css/style.css */
 .alert {
@@ -104,6 +166,18 @@ body {
     margin-bottom: 1rem;
     border: 1px solid transparent;
     border-radius: 0.25rem;
+    
+     
+}
+#alerts {
+    position: relative;
+    padding: 1rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    color: #8f6f0e;
+    background-color: #fff3cd;
+    border-color: #ffecb5;
 }
 
 .alert-success {
@@ -236,8 +310,6 @@ body {
     margin-top: 15px;
 }
 
- 
-
 .btn i {
     margin-right: 5px;
 }
@@ -256,9 +328,9 @@ body {
     padding: 8px 15px;
     border-radius: 4px;
     text-decoration: none;
-    color: #0d6efd; /* Bootstrap's primary blue color */
-    border: 1px solid #0d6efd; /* Add border for outline effect */
-    background-color: transparent; /* Ensure background is transparent */
+    color: #0d6efd;
+    border: 1px solid #0d6efd;
+    background-color: transparent;
 }
 
 /* Hover state */
@@ -266,4 +338,3 @@ body {
     color: white;
     background-color: #0d6efd;
 }
- 

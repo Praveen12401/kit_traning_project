@@ -16,7 +16,7 @@ class LoginForm(forms.Form):
 
 class ComplaintForm(forms.ModelForm):
     class Meta:
-        model = Complaint
+        model = Complaint    
         fields = ['station', 'title', 'description', 'location','pincode', 'evidence']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),

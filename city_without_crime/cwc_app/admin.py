@@ -62,7 +62,7 @@ class ComplaintAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
     fieldsets = (
         (None, {'fields': ('user', 'station', 'title')}),
-        ('Details', {'fields': ('description', 'location', 'evidence')}),
+        ('Details', {'fields': ('description', 'location','pincode', 'evidence')}),
         ('Status', {'fields': ('status',)}),
         ('Metadata', {
             'fields': ('created_at', 'updated_at'),

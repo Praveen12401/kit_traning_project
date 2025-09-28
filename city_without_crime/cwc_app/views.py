@@ -108,6 +108,10 @@ def create_complaint(request):
             complaint.save()
             messages.success(request, 'Complaint submitted successfully!')
             return redirect('complaint_list')
+        else:
+            messages.error(request, 'fill correct form')
+            return redirect('/complaints/create')
+
     else:
         
         form = ComplaintForm()

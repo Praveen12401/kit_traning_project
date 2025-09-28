@@ -21,7 +21,7 @@ urlpatterns = [
     # Criminals
     path('criminals/', views.criminal_list, name='criminal_list'),
     path('criminals/create/', views.create_criminal, name='create_criminal'),
-    path('criminals/<int:pk>/', views.criminal_detail, name='criminal_detail'),
+    path('criminals/<int:pk>/', views.criminal_detail, name='criminal_detail'),   
     
     # Police Stations
     path('stations/', views.station_list, name='station_list'),

@@ -5,6 +5,7 @@
 
 {% block content %}
 {% load static %}
+
 <div class="hero-section bg-primary text-white py-5 mb-4 rounded">
     <div class="container">
         <div class="row align-items-center">
@@ -59,7 +60,7 @@
 </div>
 
 {% if emergency_alerts %}
-<div class="alert alert-warning">
+<div   id ='alerts'>
     <h3 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>Emergency Alerts</h3>
     <div class="list-group">
         {% for alert in emergency_alerts %}

@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     });
     
-    // // Auto-dismiss alerts after 5 seconds
-    // var alerts = document.querySelectorAll('.alert');
-    // alerts.forEach(function(alert) {
-    //     setTimeout(function() {
-    //         var bsAlert = new bootstrap.Alert(alert);
-    //         bsAlert.close();
-    //     }, 5000);
-    // });
+    // Auto-dismiss alerts after 5 seconds
+    var alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }, 3000);
+    });
     
     // Form validation feedback
     var forms = document.querySelectorAll('.needs-validation');
@@ -26,17 +26,18 @@ document.addEventListener('DOMContentLoaded', function() {
             form.classList.add('was-validated');
         }, false);
     });
-    
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-});
+}
+
+//     // Smooth scrolling for anchor links
+//     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+//         anchor.addEventListener('click', function (e) {
+//             e.preventDefault();
+//             document.querySelector(this.getAttribute('href')).scrollIntoView({
+//                 behavior: 'smooth'
+//             });
+//         });
+//     });
+// });
 
 
 
