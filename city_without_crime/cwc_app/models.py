@@ -3,10 +3,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
+    email = models.EmailField(unique=True)  # ✅ Yahan add karein
     is_police = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     station = models.ForeignKey('PoliceStation', on_delete=models.SET_NULL, null=True, blank=True)
-
+    # ✅ DON'T change USERNAME_FIELD - let it remain 'username'
+    USERNAME_FIELD = 'username'  # Default hi rahega
+    REQUIRED_FIELDS = ['email']  # Email required bana de
 class PoliceStation(models.Model):
     name = models.CharField(max_length=100)
     address = models.TextField()
@@ -53,6 +56,7 @@ class Complaint(models.Model):
     pincode = models.PositiveIntegerField(blank=True, null=True)
     evidence = models.FileField(upload_to='complaint_evidence/',  null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    message=models.CharField(max_length=200,blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

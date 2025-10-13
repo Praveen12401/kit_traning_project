@@ -18,13 +18,16 @@
             </div>
         </div>
         <div class="card-body">
+            <ul class="list-group list-group-flush">
             <div class="row">
                 <div class="col-md-8">
-                    <h5><i class="fas fa-align-left me-2"></i>Description</h5>
+                    <h3><i class="fas fa-align-left me-2"></i>Description</h5>
+                         <li class="list-group-item">
                     <p class="mb-4">{{ complaint.description|linebreaks }}</p>
-                    
+                         </li>
+                    <h3><i class="fas fa-paperclip me-2"></i>Evidence</h5>
                     {% if complaint.evidence %}
-                    <h5><i class="fas fa-paperclip me-2"></i>Evidence</h5>
+            
                     <div class="mb-4">
                         {% if complaint.evidence.url|lower|slice:'-4:' == '.pdf' %}
                         <a href="{{ complaint.evidence.url }}" class="btn btn-outline-primary">
@@ -37,6 +40,9 @@
                              <a href="{{ complaint.evidence.url }}" class="btn btn-outline-primary " target="_blank">View</a>
                         {% endif %}
                     </div>
+                    {% else %}
+                    <h4 class='text-danger ms-4'> Not available </h1>
+                   
                     {% endif %}
                 </div>
                 
@@ -75,27 +81,33 @@
                                             data-bs-target="#statusModal">
                                         <i class="fas fa-sync-alt me-1"></i> Update Status
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" 
+                                    {% else %}
+                                <h2>Police Actions</h2>
+                                <div class="btn-group w-100">
+                                    <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" 
                                             data-bs-target="#messageModal">
-                                        <i class="fas fa-envelope me-1"></i> Send Message
+                                        <i class="fas fa-envelope me-1"></i> Message
                                     </button>
+                                </div>
                                 </div>
                             </div>
                             {% endif %}
+                             
                         </div>
                     </div>
                 </div>
             </div>
+        </ul>
         </div>
         <div class="card-footer bg-transparent">
             <a href="{% url 'complaint_list' %}" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left me-1"></i> Back to List
             </a>
-            <!-- {% if complaint.user == user and complaint.status != 'RESOLVED' %}
+            {% comment %} {% if complaint.user == user and complaint.status == 'PENDING' %}
             <a href="#" class="btn btn-outline-primary ms-2">
                 <i class="fas fa-edit me-1"></i> Edit Complaint
             </a>
-            {% endif %} -->
+            {% endif %}  {% endcomment %}
         </div>
     </div>
     
@@ -129,8 +141,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Notes (Optional)</label>
-                            <textarea class="form-control" name="notes" rows="3"></textarea>
+                            <label class="form-label">Message (Optional)</label>
+                            <textarea class="form-control" name="message" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -142,5 +154,39 @@
         </div>
     </div>
     {% endif %}
+
+    
+    <!-- Status See (for user) -->
+    {% if user%}
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reply by Police</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                 
+                    <div class="modal-body">
+                        <div class="mb-3">
+                             
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Message  </label>
+                            <div class="form-control" name="message" >
+                                {{complaint.message|capfirst}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                         
+                    </div>
+                 
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    
 </div>
 {% endblock %}

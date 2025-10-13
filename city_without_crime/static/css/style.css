@@ -11,12 +11,16 @@
 }
 
 body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    background-attachment: fixed;
+    min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f5f5;
      
     padding-top: 50px !important; /* Navbar ki height ke hisab se */
     margin: 0;
     position: relative;
+    cursor: default;
     
          
         
@@ -27,8 +31,9 @@ body {
 
 .hero-section {
    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  
 }
-
+ 
 .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none;
@@ -48,7 +53,7 @@ body {
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
+    background-c cursor:default;olor: var(--primary-color);
     border-color: var(--primary-color);
 }
 
@@ -92,6 +97,24 @@ body {
     font-weight: 500;
 }
 
+.nav-links {
+            display: flex;
+            list-style: none;
+        }
+.nav-links a {
+             color: rgb(22, 26, 247);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+.nav-links a:hover {
+        background-color: rgb(93, 77, 243)!important;
+        transform: translateY(-2px);
+        }
 .navbar-nav .dropdown-toggle {
     font-size: 1.2rem !important;
 }
@@ -166,6 +189,8 @@ body {
     margin-bottom: 1rem;
     border: 1px solid transparent;
     border-radius: 0.25rem;
+    color: red;
+    background: white;
     
      
 }

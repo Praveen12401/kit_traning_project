@@ -7,6 +7,10 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('register/', views.user_register, name='register'),
     path('logout/', views.user_logout, name='logout'),
+    path('password_reset/', views.user_password_reset, name='passwoed_reset'),
+    path('update_password/', views.user_set_new_password, name='update_password'),
+    path('registration_by_otp/', views.user_registration_by_otp, name='registration_by_otp'),
+     
     
     # Home
     path('', views.home, name='home'),

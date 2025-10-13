@@ -4,4 +4,5 @@ admin  -Admin123@1 - admin
 praveen1020 -Ankit123@ -police 
 praveen12 -Kit123@abc -user
 praveen1 -Ankit123@   - user
+mail password : atel cici xgwo vaiu
 

@@ -1,0 +1,27 @@
+VERIFICATION CODE - {{ purpose|upper }}.
+
+Hello user ,
+
+You're just one step away from completing your {{ purpose }}. 
+
+
+YOUR OTP CODE: {{ otp_code }}
+
+
+This code is valid for 10 minutes.
+
+SECURITY ALERT:
+- Never share this code with anyone
+- Our team will never ask for your OTP
+- This code expires in 10 minutes
+- If you didn't request this, please ignore this email
+
+Need help?
+If you're having trouble with the verification code, please contact our support team immediately.
+
+Best regards,
+The YourPlatform Team
+
+---
+© 2024 City Without Crime. All rights reserved.
+This is an automated message. Please do not reply to this email.

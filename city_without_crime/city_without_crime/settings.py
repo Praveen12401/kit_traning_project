@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+ 
+
+ 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#$dki2rerms)a7egckzz1_y-8%ve5wa-+sodyhnww$!m^7ubj^'
+SECRET_KEY =os.environ.get('SECRET_KEY') 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,10 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cwc_app',
+    'widget_tweaks',   # Third party apps 
+
+   
     
 ]
 
 MIDDLEWARE = [
+ 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -49,7 +57,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     #'cwc_app.middlewares.SimpleMiddleware',  # Your custom middleware
 ]
+
+
+
+ 
 
 ROOT_URLCONF = 'city_without_crime.urls'
 
@@ -82,6 +95,11 @@ DATABASES = {
 }
 # Custom User Model
 AUTH_USER_MODEL = 'cwc_app.User'
+# Custom authentication backend
+AUTHENTICATION_BACKENDS = [
+    'cwc_app.backends.EmailOrUsernameModelBackend',  # ✅ Yahan add karein
+    'django.contrib.auth.backends.ModelBackend',     # ✅ Default bhi rakhein
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -132,8 +150,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
  
 
+# Authentication
+ 
 # Login settings
-LOGIN_URL='/login'
+LOGIN_URL='/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
@@ -141,3 +161,12 @@ LOGOUT_REDIRECT_URL = 'home'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # or your SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")  # Use app password for Gmail
+DEFAULT_FROM_EMAIL = 'praveeny45127@gmail.com'

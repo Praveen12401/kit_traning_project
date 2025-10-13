@@ -52,7 +52,7 @@
                                    class="btn btn-sm btn-outline-primary" title="View">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                {% if complaint.status != 'RESOLVED' and not user.is_police %}
+                                {% if complaint.me != 'RESOLVED' and not user.is_police %}
                                 <a href="#" class="btn btn-sm btn-outline-secondary ms-1" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
