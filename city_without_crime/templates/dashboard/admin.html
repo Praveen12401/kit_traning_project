@@ -1,29 +1,36 @@
 {% extends 'base.html' %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Admin Dashboard - College Grievance System{% endblock %}
 
 {% block content %}
-{% load static %}
-<div class="container-fluid">
-    {{ complaint }}  <!-- Add this to verify the object exists -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Admin Dashboard</h1>
-        <a href="{% url 'create_station' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-plus fa-sm text-white-50"></i> Add New Station
-        </a>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 text-primary mb-1">Admin Dashboard</h1>
+            <p class="text-muted">College Grievance System Overview</p>
+        </div>
+        <div>
+            <a href="{% url 'create_faculty' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add New Faculty
+            </a>
+            <a href="{% url 'create_alert' %}" class="btn btn-outline-primary ms-2">
+                <i class="fas fa-bell me-2"></i>Create Alert
+            </a>
+        </div>
     </div>
 
     <!-- Stats Cards -->
     <div class="row">
-        <!-- Police Stations Card -->
+        <!-- Faculties Card -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card border-start-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Police Stations</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_stations }}</div>
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                                Total Faculties</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ stats.total_faculties }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-building fa-2x text-gray-300"></i>
@@ -33,15 +40,15 @@
             </div>
         </div>
 
-        <!-- Complaints Card -->
+        <!-- Total Grievances Card -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
+            <div class="card border-start-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total Complaints</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_complaints }}</div>
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                                Total Grievances</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ stats.total_grievances }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-exclamation-circle fa-2x text-gray-300"></i>
@@ -51,18 +58,57 @@
             </div>
         </div>
 
-        <!-- Criminals Card -->
+        <!-- Pending Grievances Card -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-start-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Criminals</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_criminals }}</div>
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                                Pending Grievances</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ stats.pending_grievances }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-user-shield fa-2x text-gray-300"></i>
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resolved Grievances Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-info text-uppercase mb-1">
+                                Resolved Grievances</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ stats.resolved_grievances }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row Stats -->
+    <div class="row">
+        <!-- Students Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-secondary text-uppercase mb-1">
+                                Total Students</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ stats.total_students }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -71,16 +117,58 @@
 
         <!-- Active Alerts Card -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card border-start-danger shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-danger text-uppercase mb-1">
                                 Active Alerts</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.active_alerts }}</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ stats.active_alerts }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-bell fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disciplinary Cases Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-dark shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-dark text-uppercase mb-1">
+                                Disciplinary Cases</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ stats.disciplinary_cases }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gavel fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resolution Rate Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                                Resolution Rate</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">
+                                {% if stats.total_grievances > 0 %}
+                                    {{ stats.resolved_grievances|floatformat:0 }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -90,134 +178,299 @@
 
     <!-- Content Row -->
     <div class="row">
-        <!-- Recent Complaints -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
+        <!-- Recent Grievances -->
+        <div class="col-xl-8 col-lg-7 mb-4">
+            <div class="card shadow">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Complaints</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Filter:</div>
-                            <a class="dropdown-item" href="#">Today</a>
-                            <a class="dropdown-item" href="#">This Week</a>
-                            <a class="dropdown-item" href="#">This Month</a>
-                        </div>
-                    </div>
+                    <h6 class="m-0 fw-bold text-primary">Recent Grievances</h6>
+                    <a href="{% url 'grievance_list' %}" class="btn btn-sm btn-outline-primary">
+                        View All
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" width="100%" cellspacing="0">
-                            <thead>
+                        <table class="table table-hover">
+                            <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
                                     <th>Title</th>
-                                    <th>Station</th>
+                                    <th>Student</th>
+                                    <th>Faculty</th>
+                                    <th>Category</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for complaint in recent_complaints %}
+                                {% for grievance in recent_grievances %}
                                 <tr>
-                                    <td>{{ complaint.id }}</td>
-                                    <td>{{ complaint.title|truncatechars:20 }}</td>
-                                    <td>{{ complaint.station.name }}</td>
+                                    <td>#{{ grievance.id }}</td>
                                     <td>
-                                       <span class="badge 
-                                            {% if complaint.status == 'PENDING' %}bg-secondary
-                                            {% elif complaint.status == 'IN_PROGRESS' %}bg-info
-                                            {% elif complaint.status == 'RESOLVED' %}bg-success
-                                            {% else %}bg-danger{% endif %} text-white">
-                                            {{ complaint.status }}
+                                        <a href="{% url 'grievance_detail' grievance.pk %}" class="text-decoration-none">
+                                            {{ grievance.title|truncatechars:30 }}
+                                        </a>
+                                    </td>
+                                    <td>{{ grievance.user.username }}</td>
+                                    <td>{{ grievance.faculty.faculty_name }}</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">
+                                            {{ grievance.get_category_display }}
                                         </span>
                                     </td>
-                                    <td>{{ complaint.created_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if grievance.status == 'PENDING' %}bg-warning
+                                            {% elif grievance.status == 'UNDER_REVIEW' %}bg-info
+                                            {% elif grievance.status == 'IN_PROGRESS' %}bg-primary
+                                            {% elif grievance.status == 'RESOLVED' %}bg-success
+                                            {% else %}bg-danger{% endif %}">
+                                            {{ grievance.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ grievance.created_at|date:"M d" }}</td>
+                                    <td>
+                                        <a href="{% url 'grievance_detail' grievance.pk %}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="5" class="text-center">No recent complaints</td>
+                                    <td colspan="8" class="text-center py-4">
+                                        <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                                        <p class="text-muted mb-0">No grievances found</p>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
-                        
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Stations Overview
+        <!-- Quick Actions & System Overview -->
         <div class="col-xl-4 col-lg-5">
+            <!-- Quick Actions -->
             <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Stations Overview</h6>
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Quick Actions</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="stationsChart"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> North
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-success"></i> South
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-info"></i> East
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-warning"></i> West
-                        </span>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{% url 'create_faculty' %}" class="btn btn-outline-primary w-100 h-100 py-3">
+                                <i class="fas fa-building fa-2x mb-2"></i><br>
+                                Add Faculty
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{% url 'create_alert' %}" class="btn btn-outline-warning w-100 h-100 py-3">
+                                <i class="fas fa-bell fa-2x mb-2"></i><br>
+                                Create Alert
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{% url 'disciplinary_list' %}" class="btn btn-outline-danger w-100 h-100 py-3">
+                                <i class="fas fa-gavel fa-2x mb-2"></i><br>
+                                Cases
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{% url 'faculty_list' %}" class="btn btn-outline-info w-100 h-100 py-3">
+                                <i class="fas fa-list fa-2x mb-2"></i><br>
+                                All Faculties
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div> -->
+
+            <!-- System Status -->
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">System Status</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Grievance System</span>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Email Service</span>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Database</span>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>File Upload</span>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <small class="text-muted">Last Updated: {% now "F j, Y H:i" %}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+        <!-- Grievance Status Chart -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Grievance Status Distribution</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="grievanceStatusChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Distribution -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Grievance Categories</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar pt-4 pb-2">
+                        <canvas id="categoryDistributionChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
 
-{% block extra_js %}
-<!-- Page level plugins -->
-<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+{% block extra_css %}
+<style>
+.border-start-primary { border-left: 4px solid #0d6efd !important; }
+.border-start-success { border-left: 4px solid #198754 !important; }
+.border-start-warning { border-left: 4px solid #ffc107 !important; }
+.border-start-info { border-left: 4px solid #0dcaf0 !important; }
+.border-start-danger { border-left: 4px solid #dc3545 !important; }
+.border-start-secondary { border-left: 4px solid #6c757d !important; }
+.border-start-dark { border-left: 4px solid #212529 !important; }
 
-<!-- Page level custom scripts -->
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Pie Chart for Stations
-var ctx = document.getElementById("stationsChart");
-var stationsChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-        labels: ["North", "South", "East", "West"],
-        datasets: [{
-            data: [35, 30, 20, 15],
-            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'],
-            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#dda20a'],
-            hoverBorderColor: "rgba(234, 236, 244, 1)",
-        }],
-    },
-    options: {
-        maintainAspectRatio: false,
-        tooltips: {
-            backgroundColor: "rgb(255,255,255)",
-            bodyFontColor: "#858796",
-            borderColor: '#dddfeb',
-            borderWidth: 1,
-            xPadding: 15,
-            yPadding: 15,
-            displayColors: false,
-            caretPadding: 10,
+document.addEventListener('DOMContentLoaded', function() {
+    // Grievance Status Chart
+    const statusCtx = document.getElementById('grievanceStatusChart').getContext('2d');
+    const statusChart = new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Pending', 'Under Review', 'In Progress', 'Resolved', 'Rejected'],
+            datasets: [{
+                data: [
+                    {{ stats.pending_grievances }},
+                    {{ stats.total_grievances|add:"-5" }}, // Example data
+                    5, // Example data
+                    {{ stats.resolved_grievances }},
+                    2  // Example data
+                ],
+                backgroundColor: [
+                    '#ffc107',
+                    '#0dcaf0',
+                    '#0d6efd',
+                    '#198754',
+                    '#dc3545'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
         },
-        legend: {
-            display: false
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            },
+            cutout: '70%'
+        }
+    });
+
+    // Category Distribution Chart
+    const categoryCtx = document.getElementById('categoryDistributionChart').getContext('2d');
+    const categoryChart = new Chart(categoryCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Academic', 'Infrastructure', 'Faculty', 'Administration', 'Hostel', 'Library', 'Other'],
+            datasets: [{
+                label: 'Number of Grievances',
+                data: [12, 19, 8, 15, 7, 5, 3], // Example data
+                backgroundColor: '#0d6efd',
+                borderColor: '#0a58ca',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
         },
-        cutoutPercentage: 80,
-    },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 5
+                    }
+                }
+            }
+        }
+    });
+
+    // Auto-refresh dashboard every 30 seconds
+    setInterval(() => {
+        fetch(window.location.href)
+            .then(response => response.text())
+            .then(html => {
+                // You can implement partial page updates here
+                console.log('Dashboard refreshed');
+            })
+            .catch(error => console.error('Refresh failed:', error));
+    }, 30000);
 });
 </script>
 {% endblock %}

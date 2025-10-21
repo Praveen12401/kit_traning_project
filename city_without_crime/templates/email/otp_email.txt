@@ -1,27 +1,30 @@
-VERIFICATION CODE - {{ purpose|upper }}.
+COLLEGE GRIEVANCE SYSTEM - ACCOUNT VERIFICATION
 
-Hello user ,
+Dear User,
 
-You're just one step away from completing your {{ purpose }}. 
+You have requested to {{ purpose }} your account on College Grievance System.
 
+VERIFICATION CODE: {{ otp_code }}
 
-YOUR OTP CODE: {{ otp_code }}
+Please enter this 6-digit code on the verification page to complete the process.
 
+⚠️ SECURITY ALERT:
+• This code expires in 10 minutes
+• Never share this code with anyone
+• College staff will never ask for your verification code
+• If you didn't initiate this request, please contact IT support immediately
 
-This code is valid for 10 minutes.
+Need Help?
+• Visit: College Administration Office
+• Email: grievance-support@yourcollege.edu
+• Phone: 1234567890
 
-SECURITY ALERT:
-- Never share this code with anyone
-- Our team will never ask for your OTP
-- This code expires in 10 minutes
-- If you didn't request this, please ignore this email
-
-Need help?
-If you're having trouble with the verification code, please contact our support team immediately.
+Thank you for using College Grievance System.
 
 Best regards,
-The YourPlatform Team
+Grievance Redressal Committee
+[Kanpur Institute of Technology Knapur, Rooma
 
 ---
-© 2024 City Without Crime. All rights reserved.
-This is an automated message. Please do not reply to this email.
+Automated Message - College Grievance System
+This email was sent to you as part of the college's digital initiative.

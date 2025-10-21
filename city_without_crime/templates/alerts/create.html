@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Alert - College Grievance System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h4 class="mb-0"><i class="fas fa-bullhorn me-2"></i>Create College Alert</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="title" class="form-label">Alert Title *</label>
+                                <input type="text" class="form-control" id="title" name="title" 
+                                       value="{{ form.title.value|default:'' }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="alert_type" class="form-label">Alert Type *</label>
+                                <select class="form-select" id="alert_type" name="alert_type" required>
+                                    <option value="GENERAL" {% if form.alert_type.value == 'GENERAL' %}selected{% endif %}>General Notice</option>
+                                    <option value="ACADEMIC" {% if form.alert_type.value == 'ACADEMIC' %}selected{% endif %}>Academic Alert</option>
+                                    <option value="EMERGENCY" {% if form.alert_type.value == 'EMERGENCY' %}selected{% endif %}>Emergency Alert</option>
+                                    <option value="EVENT" {% if form.alert_type.value == 'EVENT' %}selected{% endif %}>Event Announcement</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Alert Description *</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="5" required>{{ form.description.value|default:'' }}</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="target_faculties" class="form-label">Target Faculties</label>
+                                <select class="form-select" id="target_faculties" name="target_faculties" multiple>
+                                    {% for faculty in form.target_faculties.field.queryset %}
+                                    <option value="{{ faculty.id }}">{{ faculty.faculty_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">Hold Ctrl to select multiple faculties</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="expires_at" class="form-label">Expiry Date & Time</label>
+                                <input type="datetime-local" class="form-control" id="expires_at" name="expires_at"
+                                       value="{{ form.expires_at.value|default:'' }}">
+                                <div class="form-text">Leave empty if alert doesn't expire</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                       {% if form.is_active.value %}checked{% endif %}>
+                                <label class="form-check-label" for="is_active">
+                                    Activate this alert immediately
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'alert_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to List
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-paper-plane me-2"></i>Create Alert
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

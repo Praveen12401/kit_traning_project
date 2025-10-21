@@ -2,31 +2,131 @@
 <footer class="bg-dark text-white py-4 mt-5">
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
-                <h5>City Without Crime</h5>
-                <p>A platform connecting citizens and police stations for a safer community.</p>
+            <!-- College Information -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h5 class="text-primary">College Grievance System</h5>
+                <p class="text-light">A digital platform for students to voice concerns and get timely resolutions from college authorities.</p>
+                <div class="mt-3">
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                </div>
             </div>
-            <div class="col-md-4">
-                <h5>Quick Links</h5>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h5 class="text-primary">Quick Links</h5>
                 <ul class="list-unstyled">
-                    <li><a href="{% url 'home' %}" class=" nav-link text-white">Home</a></li>
-                    <li><a href="{% url 'complaint_list' %}" class=" nav-link text-white">File a Complaint</a></li>
-                    <li><a href="{% url 'criminal_list' %}" class="nav-link text-white">Criminal Database</a></li>
+                    <li class="mb-2">
+                        <a href="{% url 'home' %}" class="text-white text-decoration-none">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'grievance_list' %}" class="text-white text-decoration-none">
+                            <i class="fas fa-list me-2"></i>My Grievances
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'create_grievance' %}" class="text-white text-decoration-none">
+                            <i class="fas fa-edit me-2"></i>Submit Grievance
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'alert_list' %}" class="text-white text-decoration-none">
+                            <i class="fas fa-bell me-2"></i>College Alerts
+                        </a>
+                    </li>
                 </ul>
             </div>
-            <div class="col-md-4">
-                <h5>Contact</h5>
+
+            <!-- Resources -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="text-primary">Resources</h5>
                 <ul class="list-unstyled">
-                    <li><i class="fas fa-phone me-2"></i> Emergency: 100</li>
-                    <li><i class="fas fa-envelope me-2"></i> info@citywithoutcrime.com</li>
+                    <li class="mb-2">
+                        <a href="#" class="text-white text-decoration-none">
+                            <i class="fas fa-book me-2"></i>Student Handbook
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="text-white text-decoration-none">
+                            <i class="fas fa-gavel me-2"></i>Code of Conduct
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="text-white text-decoration-none">
+                            <i class="fas fa-question-circle me-2"></i>Help & Support
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="text-white text-decoration-none">
+                            <i class="fas fa-download me-2"></i>Forms & Templates
+                        </a>
+                    </li>
                 </ul>
             </div>
-            
+
+            <!-- Contact Information -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="text-primary">Contact Info</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                        <span class="text-light">[College Name]<br>
+                        [College Address]<br>
+                        [City, State - Pincode]</span>
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-phone me-2 text-primary"></i>
+                        <a href="tel:+911234567890" class="text-white text-decoration-none">+91 12345 67890</a>
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-envelope me-2 text-primary"></i>
+                        <a href="mailto:grievance@yourcollege.edu" class="text-white text-decoration-none">
+                            grievance@yourcollege.edu
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-clock me-2 text-primary"></i>
+                        <span class="text-light">Mon - Fri: 9:00 AM - 5:00 PM</span>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <hr>
-        <div class="text-center">
-            <p class="mb-0">&copy; 2023 City Without Crime. All rights reserved.</p>
+
+        <!-- Divider -->
+        <hr class="bg-light">
+
+        <!-- Bottom Section -->
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0 text-light">
+                    &copy; {% now "Y" %} College Grievance System. All rights reserved.
+                </p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <div class="mt-2 mt-md-0">
+                    <a href="#" class="text-white text-decoration-none me-3 small">Privacy Policy</a>
+                    <a href="#" class="text-white text-decoration-none me-3 small">Terms of Service</a>
+                    <a href="#" class="text-white text-decoration-none small">Accessibility</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Notice -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="alert alert-warning alert-dismissible fade show mb-0 text-center" role="alert">
+                    <small>
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Emergency Contact:</strong> For urgent matters outside working hours, 
+                        please contact the college security at <strong>+91 98765 43210</strong>
+                    </small>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
         </div>
     </div>
 </footer>
- 

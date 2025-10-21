@@ -6,8 +6,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .models import *
 
 class CustomAdminSite(admin.AdminSite):
-    site_header = 'City Without Crime Administration'
-    site_title = 'City Without Crime Admin'
+    site_header = 'College Grievance System Administration'
+    site_title = 'College Grievance System Admin'
     index_title = 'Dashboard'
 
     def get_urls(self):
@@ -18,100 +18,147 @@ class CustomAdminSite(admin.AdminSite):
         return custom_urls + urls
     
     def admin_dashboard(self, request):
-        print("DEBUG: Entered admin_dashboard view")  # Add this line
+        print("DEBUG: Entered admin_dashboard view")
         stats = {
-            'total_stations': PoliceStation.objects.count(),
-            'total_complaints': Complaint.objects.count(),
-            'total_criminals': Criminal.objects.count(),
-            'active_alerts': EmergencyAlert.objects.filter(is_active=True).count(),
-             
+            'total_faculties': Faculty.objects.count(),
+            'total_grievances': Grievance.objects.count(),
+            'pending_grievances': Grievance.objects.filter(status='PENDING').count(),
+            'resolved_grievances': Grievance.objects.filter(status='RESOLVED').count(),
+            'total_students': User.objects.filter(is_student=True).count(),
+            'active_alerts': CollegeAlert.objects.filter(is_active=True).count(),
+            'disciplinary_cases': Criminal.objects.count(),
         }
-        recent_complaints = Complaint.objects.order_by('-created_at')[:5]
-        return render(request, 'dashboard/admin.html', {'stats':stats,'recent_complaints':recent_complaints})
+        recent_grievances = Grievance.objects.order_by('-created_at')[:5]
+        return render(request, 'dashboard/admin.html', {
+            'stats': stats,
+            'recent_grievances': recent_grievances
+        })
 
 # Create instance of custom admin site
-admin_site = CustomAdminSite(name='cwc_admin')
+admin_site = CustomAdminSite(name='college_admin')
 
 # Model Admin Classes
-class PoliceStationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'jurisdiction', 'contact_number', 'email')
-    list_filter = ('jurisdiction',)
-    search_fields = ('name', 'jurisdiction', 'contact_number')
-    ordering = ('name',)
+class FacultyAdmin(admin.ModelAdmin):
+    list_display = ('faculty_name', 'department', 'hod_name', 'contact_number', 'email', 'room_number')
+    list_filter = ('faculty_name', 'department')
+    search_fields = ('faculty_name', 'department', 'hod_name', 'email')
+    ordering = ('faculty_name', 'department')
 
-class CriminalAdmin(admin.ModelAdmin):
-    list_display = ('name', 'age', 'gender', 'status', 'added_by', 'created_at')
-    list_filter = ('status', 'gender', 'added_by')
-    search_fields = ('name', 'crimes', 'address')
-    readonly_fields = ('created_at', 'updated_at')
+class GrievanceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user', 'faculty', 'category', 'priority', 'status', 'created_at')
+    list_filter = ('status', 'category', 'priority', 'faculty', 'created_at')
+    search_fields = ('title', 'description', 'user__username', 'faculty__faculty_name')
+    readonly_fields = ('created_at', 'updated_at', 'resolved_at')
     date_hierarchy = 'created_at'
     fieldsets = (
-        (None, {'fields': ('name', 'photo', 'age', 'gender')}),
-        ('Details', {'fields': ('address', 'crimes', 'status')}),
-        ('Metadata', {
-            'fields': ('added_by', 'created_at', 'updated_at'),
-            'classes': ('collapse',)
+        ('Basic Information', {
+            'fields': ('user', 'faculty', 'category', 'title', 'priority')
         }),
-    )
-
-class ComplaintAdmin(admin.ModelAdmin):
-    list_display = ('title', 'user', 'station', 'status', 'created_at')
-    list_filter = ('status', 'station', 'created_at')
-    search_fields = ('title', 'description', 'location')
-    readonly_fields = ('created_at', 'updated_at')
-    date_hierarchy = 'created_at'
-    fieldsets = (
-        (None, {'fields': ('user', 'station', 'title')}),
-        ('Details', {'fields': ('description', 'location','pincode', 'evidence')}),
-        ('Status', {'fields': ('status',)}),
+        ('Grievance Details', {
+            'fields': ('description', 'location', 'supporting_docs', 'photo_evidence')
+        }),
+        ('Status & Response', {
+            'fields': ('status', 'admin_message', 'resolved_at')
+        }),
         ('Metadata', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
 
-class EmergencyAlertAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created_by', 'is_active', 'created_at')
-    list_filter = ('is_active', 'stations')
-    filter_horizontal = ('stations',)
+class CriminalAdmin(admin.ModelAdmin):
+    list_display = ('name', 'enrollment_number', 'department', 'status', 'reported_by', 'created_at')
+    list_filter = ('status', 'department', 'created_at')
+    search_fields = ('name', 'enrollment_number', 'issue_description', 'department__faculty_name')
+    readonly_fields = ('created_at', 'updated_at')
+    date_hierarchy = 'created_at'
+    fieldsets = (
+        ('Student Information', {
+            'fields': ('name', 'enrollment_number', 'department', 'photo')
+        }),
+        ('Disciplinary Details', {
+            'fields': ('issue_description', 'status')
+        }),
+        ('Reporting Information', {
+            'fields': ('reported_by',)
+        }),
+        ('Metadata', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+class CollegeAlertAdmin(admin.ModelAdmin):
+    list_display = ('title', 'alert_type', 'created_by', 'is_active', 'created_at')
+    list_filter = ('alert_type', 'is_active', 'target_faculties', 'created_at')
+    filter_horizontal = ('target_faculties',)
     search_fields = ('title', 'description')
     readonly_fields = ('created_at',)
     date_hierarchy = 'created_at'
+    fieldsets = (
+        ('Alert Information', {
+            'fields': ('title', 'alert_type', 'description')
+        }),
+        ('Target & Duration', {
+            'fields': ('target_faculties', 'expires_at', 'is_active')
+        }),
+        ('Creator Information', {
+            'fields': ('created_by',)
+        }),
+        ('Metadata', {
+            'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )
 
-class StationMessageAdmin(admin.ModelAdmin):
+class InterFacultyMessageAdmin(admin.ModelAdmin):
     list_display = ('subject', 'sender', 'receiver', 'created_at', 'is_read')
-    list_filter = ('is_read', 'sender', 'receiver')
-    search_fields = ('subject', 'message')
+    list_filter = ('is_read', 'sender', 'receiver', 'created_at')
+    search_fields = ('subject', 'message', 'sender__faculty_name', 'receiver__faculty_name')
     readonly_fields = ('created_at',)
     date_hierarchy = 'created_at'
 
+class GrievanceFeedbackAdmin(admin.ModelAdmin):
+    list_display = ('grievance', 'rating', 'created_at')
+    list_filter = ('rating', 'created_at')
+    search_fields = ('grievance__title', 'comments')
+    readonly_fields = ('created_at',)
+
 class CustomUserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'is_police', 'is_admin', 'station')
-    list_filter = ('is_police', 'is_admin', 'is_staff', 'is_superuser')
-    search_fields = ('username', 'email', 'station__name')
+    list_display = ('username', 'email', 'enrollment_number', 'semester', 'is_student', 'is_faculty_staff', 'is_admin', 'department')
+    list_filter = ('is_student', 'is_faculty_staff', 'is_admin', 'is_staff', 'is_superuser', 'department')
+    search_fields = ('username', 'email', 'enrollment_number', 'department__faculty_name')
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('email',)}),
-        ('Permissions', {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'is_police', 'is_admin', 'groups', 'user_permissions'),
+        ('Personal Information', {
+            'fields': ('email', 'enrollment_number', 'semester', 'department')
         }),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
-        ('Station Info', {'fields': ('station',)}),
+        ('Permissions', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'is_student', 'is_faculty_staff', 'is_admin', 'groups', 'user_permissions'),
+        }),
+        ('Important Dates', {
+            'fields': ('last_login', 'date_joined')
+        }),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_police', 'is_admin', 'station'),
+            'fields': (
+                'username', 'email', 'password1', 'password2', 
+                'enrollment_number', 'semester', 'department',
+                'is_student', 'is_faculty_staff', 'is_admin'
+            ),
         }),
     )
 
 # Register models with the custom admin site
 admin_site.register(User, CustomUserAdmin)
-admin_site.register(PoliceStation, PoliceStationAdmin)
+admin_site.register(Faculty, FacultyAdmin)
+admin_site.register(Grievance, GrievanceAdmin)
 admin_site.register(Criminal, CriminalAdmin)
-admin_site.register(Complaint, ComplaintAdmin)
-admin_site.register(EmergencyAlert, EmergencyAlertAdmin)
-admin_site.register(StationMessage, StationMessageAdmin)
+admin_site.register(CollegeAlert, CollegeAlertAdmin)
+admin_site.register(InterFacultyMessage, InterFacultyMessageAdmin)
+admin_site.register(GrievanceFeedback, GrievanceFeedbackAdmin)
 
 # Replace default admin site
 admin.site = admin_site

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Case Details - College Grievance System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Disciplinary Case</h4>
+                        <span class="badge bg-{% if case.status == 'PENDING' %}warning
+                                              {% elif case.status == 'UNDER_INVESTIGATION' %}info
+                                              {% elif case.status == 'RESOLVED' %}success
+                                              {% else %}primary{% endif %} fs-6">
+                            {{ case.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            {% if case.photo %}
+                            <img src="{{ case.photo.url }}" alt="{{ case.name }}" 
+                                 class="rounded-circle mb-3" width="120" height="120">
+                            {% else %}
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3" 
+                                 style="width: 120px; height: 120px;">
+                                <i class="fas fa-user fa-3x text-white"></i>
+                            </div>
+                            {% endif %}
+                            <h5>{{ case.name }}</h5>
+                            <p class="text-muted">{{ case.enrollment_number|default:"No Enrollment" }}</p>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="30%">Department:</th>
+                                    <td>{{ case.department.faculty_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status:</th>
+                                    <td>
+                                        <span class="badge bg-{% if case.status == 'PENDING' %}warning
+                                                              {% elif case.status == 'UNDER_INVESTIGATION' %}info
+                                                              {% elif case.status == 'RESOLVED' %}success
+                                                              {% else %}primary{% endif %}">
+                                            {{ case.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Reported By:</th>
+                                    <td>{{ case.reported_by.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Reported On:</th>
+                                    <td>{{ case.created_at|date:"M d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Last Updated:</th>
+                                    <td>{{ case.updated_at|date:"M d, Y H:i" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="text-muted">Disciplinary Issue</h6>
+                        <div class="p-3 bg-light rounded">
+                            {{ case.issue_description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header bg-light py-3">
+                    <h6 class="mb-0">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'disciplinary_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to List
+                        </a>
+                        <a href="{% url 'create_disciplinary' %}" class="btn btn-outline-warning">
+                            <i class="fas fa-plus me-2"></i>Add New Case
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

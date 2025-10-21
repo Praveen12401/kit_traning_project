@@ -1,194 +1,58 @@
-<!-- templates/accounts/login.html -->
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Login - College Grievance System{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h3 class="mb-0"><i class="fas fa-sign-in-alt me-2"></i>Login</h3>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    
-                    
-                    <div class="mb-3">
-                        <label for="id_username" class="form-label"> 
-                            <i class="bi bi-person-fill me-2"></i> Username or Email
-                        </label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="id_username" 
-                               name="username" 
-                               required
-                               placeholder="Enter your username or email">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="id_password" class="form-label"> 
-                            <i class="bi bi-lock-fill me-2"></i> Password
-                        </label>
-                        <div class="input-group">
-                            <input type="password" 
-                                   class="form-control" 
-                                   id="id_password" 
-                                   name="password" 
-                                   required
-                                   placeholder="Enter your password">
-                            <button type="button" 
-                                    class="btn btn-outline-secondary toggle-password" 
-                                    data-target="id_password">
-                                <i class="fas fa-eye"></i>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3><i class="fas fa-sign-in-alt me-2"></i>Login</h3>
+                    <p class="mb-0">Access your account</p>
+                </div>
+                <div class="card-body p-5">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       placeholder="Enter your username" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       placeholder="Enter your password" required>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
                             </button>
                         </div>
-                    </div>
+                    </form>
                     
-                    <div class="text-end mt-2">
-                        <a href="{% url 'passwoed_reset' %}" class="text-decoration-none">Forgot password?</a>
+                    <div class="text-center mt-4">
+                        <p class="mb-2">
+                            <a href="{% url 'password_reset' %}" class="text-decoration-none">
+                                Forgot Password?
+                            </a>
+                        </p>
+                        <p class="mb-0">
+                            Don't have an account? 
+                            <a href="{% url 'register' %}" class="text-decoration-none fw-bold">
+                                Register here
+                            </a>
+                        </p>
                     </div>
-                    
-                    <br>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary"> 
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                        </button>
-                    </div>
-                </form>
-                
-                <div class="mt-3 text-center">
-                    <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Hide/Show Password Functionality
-    const toggleButtons = document.querySelectorAll('.toggle-password');
-    
-    toggleButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
-            const passwordInput = document.getElementById(targetId);
-            const icon = this.querySelector('i');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-                this.setAttribute('title', 'Hide password');
-                this.classList.add('active');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-                this.setAttribute('title', 'Show password');
-                this.classList.remove('active');
-            }
-            
-            // Re-focus the input after toggle
-            passwordInput.focus();
-        });
-        
-        // Set initial title
-        button.setAttribute('title', 'Show password');
-    });
-    
-    // Optional: Enter key support for login
-    const passwordInput = document.getElementById('id_password');
-    const usernameInput = document.getElementById('id_username');
-    const loginForm = document.querySelector('form');
-    
-    passwordInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            loginForm.dispatchEvent(new Event('submit', { cancelable: true }));
-        }
-    });
-});
-
-// Add CSS for better styling
-const style = document.createElement('style');
-style.textContent = `
-    .input-group .toggle-password {
-        border-left: 0;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        transition: all 0.2s ease;
-        width: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .input-group .toggle-password:hover {
-        background-color: #e9ecef;
-        border-color: #ced4da;
-    }
-    
-    .input-group .toggle-password.active {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: white;
-    }
-    
-    .input-group .toggle-password.active:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-    }
-    
-    .input-group .form-control:focus {
-        z-index: 3;
-        box-shadow: none;
-        border-color: #86b7fe;
-    }
-    
-    .input-group .form-control:focus + .toggle-password {
-        border-color: #86b7fe;
-    }
-    
-    .input-group .form-control:focus + .toggle-password:not(.active) {
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-    
-    .toggle-password i {
-        transition: transform 0.2s ease;
-        width: 16px;
-        height: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .toggle-password:hover i {
-        transform: scale(1.1);
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 576px) {
-        .card {
-            margin: 10px;
-        }
-        
-        .input-group .toggle-password {
-            width: 45px;
-        }
-    }
-    
-    /* Custom focus styles */
-    .form-control:focus {
-        border-color: #86b7fe;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-`;
-document.head.appendChild(style);
-</script>
 {% endblock %}

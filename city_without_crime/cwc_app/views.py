@@ -1,21 +1,21 @@
 # cwc_app/views.py
+from datetime import timezone
 from venv import logger
-from django.shortcuts import render, redirect, get_object_or_404,HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from .models import *
 from .forms import *
-import random,os
+import random, os
 
-from django.core.mail import send_mail,EmailMultiAlternatives
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 import logging
 import smtplib
 from django.core.exceptions import ValidationError
-
 
 logger = logging.getLogger(__name__)
 
@@ -43,48 +43,46 @@ def verify_email_delivery(email_address):
         # Fallback if dnspython is not installed
         return True, "Basic validation passed"
 
- 
 def send_simple_email(user_email):
     # Send OTP logic here
     otp = random.randint(100000, 999999)
-    user_email=str(user_email)
+    user_email = str(user_email)
  
     context = {
-             
-            'otp_code': otp,
-            'purpose': 'password reset'
-        }
-     # Render HTML template
+        'otp_code': otp,
+        'purpose': 'password reset'
+    }
+    
+    # Render HTML template
     text_content = render_to_string('email/otp_email.txt', context)
-    # Email subject based on purpose
-     
-    subject =  'Your Verification Code - City Without Crime'
+    
+    subject = 'Your Verification Code - College Grievance System'
     try:
         # Create email
         email = EmailMultiAlternatives(
             subject=subject,
             body=text_content,
-            from_email= os.environ.get('EMAIL_HOST_USER') ,
+            from_email=os.environ.get('EMAIL_HOST_USER'),
             to=[user_email],
-            reply_to=['support@yourplatform.com']
+            reply_to=['support@collegegrievance.com']
         )
         
         # Validate email format before sending
         from django.core.validators import validate_email
         print(validate_email(user_email))
+        
         # Step 2: Verify email delivery capability
         delivery_verified, delivery_message = verify_email_delivery(user_email)
         if not delivery_verified:
-            return False,otp 
+            return False, otp
 
         # Send email
         email.send(fail_silently=False)
         logger.info(f"OTP email sent successfully to {user_email}")
-        return True,otp
+        return True, otp
     except Exception as e:
         print(f"Error sending OTP email: {e}")
-        return False,otp
-    
+        return False, otp
 
 # Authentication Views
 def user_login(request):
@@ -97,11 +95,11 @@ def user_login(request):
             
             if user is not None:
                 login(request, user)
-                messages.success(request, f'Welcome back, {username}!')  # Add this line
+                messages.success(request, f'Welcome back, {username}!')
                 if user.is_admin:
                     return redirect('admin_dashboard')
-                elif user.is_police:
-                    return redirect('police_dashboard')
+                elif user.is_faculty_staff:
+                    return redirect('faculty_dashboard')
                 else:
                     return redirect('home')
             else:
@@ -115,88 +113,77 @@ def user_register(request):
         form = UserRegistrationForm(request.POST)
          
         if form.is_valid():
-            username=form.cleaned_data['username']
-            user_email=form.cleaned_data['email']
-            password1=form.cleaned_data['password1']
+            username = form.cleaned_data['username']
+            user_email = form.cleaned_data['email']
+            password1 = form.cleaned_data['password1']
             # Session set karna
             request.session['reset_username'] = username
             request.session['reset_email'] = user_email
             request.session['reset_password1'] = password1
-            isvalid,otp =send_simple_email(user_email)
+            isvalid, otp = send_simple_email(user_email)
 
-            print(isvalid,otp)
+            print('user register ',isvalid, otp)
             if isvalid:
-            # print('otp sent')
-                return  render(request,'accounts/registration_by_otp.html',{'otps':otp,'user_email':user_email})
+                return render(request, 'accounts/registration_by_otp.html', {'otps': otp, 'user_email': user_email})
             else:
-                messages.error(request,"Failed to send OTP email. Please check your email address and try again.")
+                messages.error(request, "Failed to send OTP email. Please check your email address and try again.")
                 return render(request, 'accounts/register.html', {'form': form})
-
-
-            # user = form.save()
-            # login(request, user)
-            
         else:
-             
             return render(request, 'accounts/register.html', {'form': form})
     else:
         form = UserRegistrationForm()
     return render(request, 'accounts/register.html', {'form': form})
-''' after registration form fill and submit and otp varifyed then
- this function run and user create'''
+
 def user_registration_by_otp(request):
     try:
-        # Session se email lo
+        # Session se data lo
         username = request.session.get('reset_username')
         user_email = request.session.get('reset_email')
         password1 = request.session.get('reset_password1')
+        
         User.objects.create_user(
-                username=username,
-                email=user_email,
-                password=password1,
-                
-            )
+            username=username,
+            email=user_email,
+            password=password1,
+            is_student=True  # Default student banayein
+        )
     except Exception as e:
         print(e)
-    messages.success(request, 'Registration successful! now login')
+        messages.error(request, 'Registration failed. Please try again.')
+        return redirect('register')
+    
+    messages.success(request, 'Registration successful! Please login.')
     return redirect('login')
 
 def user_logout(request):
     logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect('home')
- 
+
 def user_password_reset(request):
     if request.method == 'POST':
         form = ResetPasswordForm(request.POST)
         if form.is_valid(): 
-            user_email=form.cleaned_data['email']
+            user_email = form.cleaned_data['email']
              
             # Check if user exists and send OTP
             try:
                 if not User.objects.filter(email=user_email).exists():
                     messages.error(request, 'No account found with this email address.')
+                    return render(request, 'accounts/password_reset.html', {'form': form})
 
-                    return render(request,'accounts/password_reset.html',{'form':form})
-
-                
-                isvalid,otp=send_simple_email(user_email)
+                isvalid, otp = send_simple_email(user_email)
                 # Session set karna
                 request.session['reset_email'] = user_email
                  
-                 
-            
             except User.DoesNotExist:
                 messages.error(request, 'No account found with this email address.')
-
             
-            return  render(request,'accounts/confurm_otp_page.html',{'otps':otp,'user_email':user_email})
-
+            return render(request, 'accounts/confurm_otp_page.html', {'otps': otp, 'user_email': user_email})
     else:
         form = ResetPasswordForm()
-     
     
-    return render(request,'accounts/password_reset.html',{'form':form})
+    return render(request, 'accounts/password_reset.html', {'form': form})
 
 def user_set_new_password(request):
     if request.method == 'POST':
@@ -219,232 +206,315 @@ def user_set_new_password(request):
                 # Session clear karo
                 request.session.flush()
                 
-                messages.success(request, 'Password updated successfully now login!')
+                messages.success(request, 'Password updated successfully! Please login.')
                 return redirect('login')
             
             except User.DoesNotExist:
                 messages.error(request, 'User not found')
         else:
-            messages.error(request, 'Wrong something!')
+            messages.error(request, 'Something went wrong!')
             return redirect('register')
     else:
         form = UserRegistrationForm()
     return render(request, 'accounts/set_new_password.html', {'form': form})
 
-
 # Home Views
 def home(request):
-    emergency_alerts = EmergencyAlert.objects.filter(is_active=True).order_by('-created_at')[:5]
-    return render(request, 'home/index.html', {'emergency_alerts': emergency_alerts})
+    college_alerts = CollegeAlert.objects.filter(is_active=True).order_by('-created_at')[:5]
+    
+    # Optional: Add dynamic stats
+    total_grievances = Grievance.objects.filter(status='RESOLVED').count()
+    active_students = User.objects.filter(is_student=True).count()
+    
+    context = {
+        'college_alerts': college_alerts,
+        'total_grievances': total_grievances,
+        'active_students': active_students,
+        'resolution_rate': '95%'  # You can calculate this dynamically
+    }
+    
+    return render(request, 'home/index.html', context)
 
 def message_list(request):
-    if not request.user.is_police:
+    if not request.user.is_faculty_staff:
         return redirect('home')
     
-    station = request.user.station
-    message = StationMessage.objects.filter(
-        Q(receiver=station) | Q(sender=station)
+    faculty = request.user.department
+    messages = InterFacultyMessage.objects.filter(
+        Q(receiver=faculty) | Q(sender=faculty)
     ).order_by('-created_at')
     
-    return render(request, 'dashboard/message_list.html', {'message': message})
-# complaint update for police and admin
-def update_complaint_status(request, pk):
-    if not request.user.is_police:
-        messages.error(request, "You don't have permission to update complaint status.")
+    return render(request, 'dashboard/message_list.html', {'messages': messages})
+
+# Grievance update for faculty and admin
+def update_grievance_status(request, pk):
+    if not (request.user.is_faculty_staff or request.user.is_admin):
+        messages.error(request, "You don't have permission to update grievance status.")
         return redirect('home')
     
-    complaint = get_object_or_404(Complaint, pk=pk)
+    grievance = get_object_or_404(Grievance, pk=pk)
     
     if request.method == 'POST':
         new_status = request.POST.get('status')
-        new_message = request.POST.get('message')
+        admin_message = request.POST.get('admin_message')
         
-        if new_status in dict(Complaint.STATUS_CHOICES).keys():
-            complaint.status = new_status
-            complaint.message = new_message
-            complaint.save()
-            messages.success(request, f"Complaint status updated to {complaint.get_status_display()}.")
+        if new_status in dict(Grievance.STATUS_CHOICES).keys():
+            grievance.status = new_status
+            grievance.admin_message = admin_message
+            if new_status == 'RESOLVED':
+                grievance.resolved_at = timezone.now()
+            grievance.save()
+            messages.success(request, f"Grievance status updated to {grievance.get_status_display()}.")
         else:
             messages.error(request, "Invalid status selected.")
     
-    return redirect('complaint_detail', pk=complaint.pk)
+    return redirect('grievance_detail', pk=grievance.pk)
 
-# Complaint Views
+# Grievance Views
 @login_required
-def complaint_list(request):
-    if request.user.is_police or request.user.is_admin:
-        complaints = Complaint.objects.filter(station=request.user.station).order_by('-created_at')
-         
+def grievance_list(request):
+    if request.user.is_faculty_staff or request.user.is_admin:
+        grievances = Grievance.objects.filter(faculty=request.user.department).order_by('-created_at')
     else:
-        complaints = Complaint.objects.filter(user=request.user).order_by('-created_at')
-        print(complaints)
-    return render(request, 'complaints/list.html', {'complaints': complaints})
+        grievances = Grievance.objects.filter(user=request.user).order_by('-created_at')
+    
+    return render(request, 'grievances/list.html', {'grievances': grievances})
 
 @login_required
-def create_complaint(request):
+def create_grievance(request):
     if request.method == 'POST':
-        form = ComplaintForm(request.POST, request.FILES)
+        form = GrievanceForm(request.POST, request.FILES)
          
         if form.is_valid():
-            complaint = form.save(commit=False)
-            complaint.user = request.user
-            complaint.save()
-            messages.success(request, 'Complaint submitted successfully!')
-            return redirect('complaint_list')
+            grievance = form.save(commit=False)
+            grievance.user = request.user
+            grievance.save()
+            messages.success(request, 'Grievance submitted successfully!')
+            return redirect('grievance_list')
         else:
-            messages.error(request, 'Complaint not correct fill please')
-            return redirect('complaint_list')
-
+            messages.error(request, 'Please correct the errors below.')
+            return render(request, 'grievances/create.html', {'form': form})
     else:
-        
-        form = ComplaintForm()
-    return render(request, 'complaints/create.html', {'form': form})
+        form = GrievanceForm()
+    return render(request, 'grievances/create.html', {'form': form})
 
 @login_required
-def complaint_detail(request, pk):
-    complaint = get_object_or_404(Complaint, pk=pk)
-    if not (request.user == complaint.user or request.user.is_police or request.user.is_admin):
-        messages.error(request, 'You are not authorized to view this complaint.')
-        return redirect('complaint_list')
-    return render(request, 'complaints/detail.html', {'complaint': complaint})
+def grievance_detail(request, pk):
+    grievance = get_object_or_404(Grievance, pk=pk)
+    if not (request.user == grievance.user or request.user.is_faculty_staff or request.user.is_admin):
+        messages.error(request, 'You are not authorized to view this grievance.')
+        return redirect('grievance_list')
+    
+    feedback_form = GrievanceFeedbackForm()
+    return render(request, 'grievances/detail.html', {
+        'grievance': grievance,
+        'feedback_form': feedback_form
+    })
 
-# Criminal Views
 @login_required
-def criminal_list(request):
-    criminals = Criminal.objects.all().order_by('-created_at')
-    return render(request, 'criminals/list.html', {'criminals': criminals})
+def submit_grievance_feedback(request, pk):
+    grievance = get_object_or_404(Grievance, pk=pk)
+    
+    if request.user != grievance.user:
+        messages.error(request, 'You can only submit feedback for your own grievances.')
+        return redirect('grievance_detail', pk=pk)
+    
+    if request.method == 'POST':
+        form = GrievanceFeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.grievance = grievance
+            feedback.save()
+            messages.success(request, 'Thank you for your feedback!')
+    
+    return redirect('grievance_detail', pk=pk)
+
+# Disciplinary Cases Views
+@login_required
+def disciplinary_list(request):
+    if not (request.user.is_faculty_staff or request.user.is_admin):
+        messages.error(request, 'You are not authorized to view this page.')
+        return redirect('home')
+    
+    cases = Criminal.objects.all().order_by('-created_at')
+    return render(request, 'disciplinary/list.html', {'cases': cases})
 
 @login_required
-def create_criminal(request):
-    if not (request.user.is_police or request.user.is_admin):
+def create_disciplinary(request):
+    if not (request.user.is_faculty_staff or request.user.is_admin):
         messages.error(request, 'You are not authorized to perform this action.')
         return redirect('home')
     
     if request.method == 'POST':
-        form = CriminalForm(request.POST, request.FILES)
+        form = DisciplinaryForm(request.POST, request.FILES)
         if form.is_valid():
-            criminal = form.save(commit=False)
-            criminal.added_by = request.user
-            criminal.save()
-            messages.success(request, 'Criminal record added successfully!')
-            return redirect('criminal_list')
+            case = form.save(commit=False)
+            case.reported_by = request.user
+            case.save()
+            messages.success(request, 'Disciplinary case added successfully!')
+            return redirect('disciplinary_list')
     else:
-        form = CriminalForm()
-    return render(request, 'criminals/create.html', {'form': form})
+        form = DisciplinaryForm()
+    return render(request, 'disciplinary/create.html', {'form': form})
 
 @login_required
-def criminal_detail(request, pk):
-    criminal = get_object_or_404(Criminal, pk=pk)
-    return render(request, 'criminals/detail.html', {'criminal': criminal})
+def disciplinary_detail(request, pk):
+    case = get_object_or_404(Criminal, pk=pk)
+    return render(request, 'disciplinary/detail.html', {'case': case})
 
-# Police Station Views
+# Faculty Views
 @login_required
-def station_list(request):
-    stations = PoliceStation.objects.all().order_by('name')
-    return render(request, 'police_stations/list.html', {'stations': stations})
-
-@login_required
-def station_detail(request, pk):
-    station = get_object_or_404(PoliceStation, pk=pk)
-    return render(request, 'police_stations/detail.html', {'station': station})
+def faculty_list(request):
+    faculties = Faculty.objects.all().order_by('faculty_name')
+    return render(request, 'faculties/list.html', {'faculties': faculties})
 
 @login_required
-def create_station(request):
+def faculty_detail(request, pk):
+    faculty = get_object_or_404(Faculty, pk=pk)
+    return render(request, 'faculties/detail.html', {'faculty': faculty})
+
+@login_required
+def create_faculty(request):
     if not request.user.is_admin:
         messages.error(request, 'You are not authorized to perform this action.')
         return redirect('home')
     
     if request.method == 'POST':
-        form = PoliceStationForm(request.POST)
+        form = FacultyForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Police station added successfully!')
-            return redirect('station_list')
+            messages.success(request, 'Faculty added successfully!')
+            return redirect('faculty_list')
     else:
-        form = PoliceStationForm()
-    return render(request, 'police_stations/create.html', {'form': form})
+        form = FacultyForm()
+    return render(request, 'faculties/create.html', {'form': form})
 
-# Emergency Views
+# College Alert Views
 @login_required
-def emergency_list(request):
-    alerts = EmergencyAlert.objects.filter(is_active=True).order_by('-created_at')
-    return render(request, 'emergency/list.html', {'alerts': alerts})
+def alert_list(request):
+    alerts = CollegeAlert.objects.filter(is_active=True).order_by('-created_at')
+    return render(request, 'alerts/list.html', {'alerts': alerts})
 
 @login_required
-def create_emergency(request):
-    if not (request.user.is_police or request.user.is_admin):
+def create_alert(request):
+    if not (request.user.is_faculty_staff or request.user.is_admin):
         messages.error(request, 'You are not authorized to perform this action.')
         return redirect('home')
     
     if request.method == 'POST':
-        form = EmergencyAlertForm(request.POST)
+        form = CollegeAlertForm(request.POST)
         if form.is_valid():
             alert = form.save(commit=False)
             alert.created_by = request.user
             alert.save()
             form.save_m2m()  # Save many-to-many relationships
-            messages.success(request, 'Emergency alert created successfully!')
-            return redirect('emergency_list')
+            messages.success(request, 'College alert created successfully!')
+            return redirect('alert_list')
     else:
-        form = EmergencyAlertForm()
-    return render(request, 'emergency/create.html', {'form': form})
+        form = CollegeAlertForm()
+    return render(request, 'alerts/create.html', {'form': form})
 
-   
+# Inter-Faculty Message Views
+@login_required
+def create_message(request):
+    if not request.user.is_faculty_staff:
+        messages.error(request, 'You are not authorized to perform this action.')
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = InterFacultyMessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user.department
+            message.save()
+            messages.success(request, 'Message sent successfully!')
+            return redirect('message_list')
+    else:
+        form = InterFacultyMessageForm()
+    return render(request, 'messages/create.html', {'form': form})
 
-
-
-
+# Dashboard Views
 @login_required
 def admin_dashboard(request):
-    print("DEBUG: Entered admin_dashboard view")  # Add this line
     if not request.user.is_admin:
         messages.error(request, 'You are not authorized to view this page.')
         return redirect('home')
     
     stats = {
-        'total_stations': PoliceStation.objects.count(),
-        'total_complaints': Complaint.objects.count(),
-        'total_criminals': Criminal.objects.count(),
-        'active_alerts': EmergencyAlert.objects.filter(is_active=True).count(),
+        'total_faculties': Faculty.objects.count(),
+        'total_grievances': Grievance.objects.count(),
+        'pending_grievances': Grievance.objects.filter(status='PENDING').count(),
+        'resolved_grievances': Grievance.objects.filter(status='RESOLVED').count(),
+        'total_students': User.objects.filter(is_student=True).count(),
+        'active_alerts': CollegeAlert.objects.filter(is_active=True).count(),
+        'disciplinary_cases': Criminal.objects.count(),
     }
-    print(stats,'ram')
     
-    recent_complaints = Complaint.objects.order_by('-created_at')[:5]
+    recent_grievances = Grievance.objects.order_by('-created_at')[:5]
     
     return render(request, 'dashboard/admin.html', {
         'stats': stats,
-        'recent_complaints': recent_complaints
+        'recent_grievances': recent_grievances
     })
-   
+
 @login_required
-def police_dashboard(request):
-    
-    if not request.user.is_police:
+def faculty_dashboard(request):
+    if not request.user.is_faculty_staff:
         messages.error(request, 'You are not authorized to view this page.')
         return redirect('home')
     
-    station = request.user.station
+    faculty = request.user.department
     stats = {
-        'pending_complaints': Complaint.objects.filter(station=station, status='PENDING').count(),
-        'in_progress_complaints': Complaint.objects.filter(station=station, status='IN_PROGRESS').count(),
-        'resolved_complaints': Complaint.objects.filter(station=station, status='RESOLVED').count(),
-        'unread_messages': StationMessage.objects.filter(receiver=station, is_read=False).count(),
+        'pending_grievances': Grievance.objects.filter(faculty=faculty, status='PENDING').count(),
+        'in_progress_grievances': Grievance.objects.filter(faculty=faculty, status='IN_PROGRESS').count(),
+        'resolved_grievances': Grievance.objects.filter(faculty=faculty, status='RESOLVED').count(),
+        'unread_messages': InterFacultyMessage.objects.filter(receiver=faculty, is_read=False).count(),
     }
-  
-    recent_complaints = Complaint.objects.order_by('-created_at')[:5]
     
-    recent_messages = StationMessage.objects.filter(
-        Q(receiver=station) | Q(sender=station)
+    recent_grievances = Grievance.objects.filter(faculty=faculty).order_by('-created_at')[:5]
+    
+    recent_messages = InterFacultyMessage.objects.filter(
+        Q(receiver=faculty) | Q(sender=faculty)
     ).order_by('-created_at')[:3]
     
-    active_alerts = EmergencyAlert.objects.filter(
+    active_alerts = CollegeAlert.objects.filter(
         is_active=True,
-        stations=station
+        target_faculties=faculty
     )
     
-    return render(request, 'dashboard/police.html', {
+    return render(request, 'dashboard/faculty.html', {
         'stats': stats,
         'recent_messages': recent_messages,
         'active_alerts': active_alerts,
-        'recent_complaints':recent_complaints
+        'recent_grievances': recent_grievances
+    })
+
+# Profile Views
+
+@login_required
+def user_profile(request):
+    faculties = Faculty.objects.all()
+    
+    # Grievance statistics calculate karen
+    user_grievances = request.user.grievances.all()
+    resolved_count = user_grievances.filter(status='RESOLVED').count()
+    pending_count = user_grievances.filter(status='PENDING').count()
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('user_profile')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = UserProfileForm(instance=request.user)
+    
+    return render(request, 'accounts/profile.html', {
+        'form': form,
+        'faculties': faculties,
+        'resolved_count': resolved_count,
+        'pending_count': pending_count,
+        'user_grievances': user_grievances
     })

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ faculty.faculty_name }} - College Grievance System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">{{ faculty.faculty_name }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Faculty Name:</th>
+                                    <td>{{ faculty.faculty_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Department:</th>
+                                    <td>{{ faculty.department }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Head of Department:</th>
+                                    <td>{{ faculty.hod_name }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Contact Number:</th>
+                                    <td>{{ faculty.contact_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>{{ faculty.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Room Number:</th>
+                                    <td>{{ faculty.room_number|default:"N/A" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6 class="text-muted">Faculty Information</h6>
+                        <p class="mb-0">
+                            This faculty handles student grievances related to {{ faculty.department }}.
+                            Contact the Head of Department for any urgent matters.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header bg-light py-3">
+                    <h6 class="mb-0">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'faculty_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to List
+                        </a>
+                        {% if user.is_admin %}
+                        <a href="{% url 'create_faculty' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-plus me-2"></i>Add New Faculty
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
