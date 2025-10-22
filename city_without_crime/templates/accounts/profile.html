@@ -16,7 +16,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <h1 class="h2 mb-1">{{ user.username }}'s Profile</h1>
+                        <h1 class="h2 mb-1">{{ user.username|capfirst }}'s Profile</h1>
                         <p class="mb-0 opacity-75">
                             {% if user.is_student %}
                                 Student Account - College Grievance System
@@ -54,7 +54,7 @@
                             <i class="fas fa-user"></i>
                         </div>
                     </div>
-                    <h4 class="card-title text-dark mb-2">{{ user.username }}</h4>
+                    <h4 class="card-title text-dark mb-2">{{ user.username|capfirst }}</h4>
                     <p class="text-muted mb-3">
                         {{ user.email }}
                     </p>
@@ -125,7 +125,7 @@
                             <div class="col-md-6 mb-3">
                                 <label for="username" class="form-label fw-semibold">Username</label>
                                 <input type="text" class="form-control form-control-lg" id="username" 
-                                       value="{{ user.username }}" readonly>
+                                       value="{{ user.username|capfirst }}" readonly>
                                 <div class="form-text text-muted">Username cannot be changed</div>
                             </div>
                             
@@ -142,7 +142,7 @@
                             <!-- Enrollment Number -->
                             <div class="col-md-6 mb-3">
                                 <label for="enrollment_number" class="form-label fw-semibold">Enrollment Number</label>
-                                <input type="text" class="form-control form-control-lg" id="enrollment_number" 
+                                <input type="text" maxlength='15' class="form-control form-control-lg" id="enrollment_number" 
                                        name="enrollment_number" value="{{ user.enrollment_number|default:'' }}"
                                        placeholder="Enter your enrollment number">
                                 <div class="form-text text-muted">For students only</div>
@@ -151,7 +151,8 @@
                             <!-- Semester -->
                             <div class="col-md-6 mb-3">
                                 <label for="semester" class="form-label fw-semibold">Semester</label>
-                                <input type="text" class="form-control form-control-lg" id="semester" 
+                                <input type="Number" maxlength='1'
+                                 class="form-control form-control-lg" id="semester" 
                                        name="semester" value="{{ user.semester|default:'' }}"
                                        placeholder="e.g., 3rd Semester">
                                 <div class="form-text text-muted">Current semester</div>
@@ -166,7 +167,7 @@
                                 {% for faculty in faculties %}
                                 <option value="{{ faculty.id }}" 
                                         {% if user.department.id == faculty.id %}selected{% endif %}>
-                                    {{ faculty.faculty_name }} - {{ faculty.department }}
+                                     {{ faculty.department|capfirst }}
                                 </option>
                                 {% endfor %}
                             </select>

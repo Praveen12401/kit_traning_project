@@ -18,34 +18,45 @@
                         <strong>{{ user_email }}</strong></p>
                     </div>
                     
-                    <form method="post" action="{% url 'registration_by_otp' %}">
+                    <!-- Error Message Display -->
+                    {% if messages %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post" action="{% url 'registration_by_otp' %}" id="otpForm">
                         {% csrf_token %}
+                        <input type="hidden" name="user_email" value="{{ user_email }}">
+                        
                         <div class="mb-4">
                             <label for="otp" class="form-label">Enter OTP</label>
                             <input type="text" class="form-control text-center fs-3" id="otp" name="otp" 
                                    maxlength="6" pattern="[0-9]{6}" required 
                                    style="letter-spacing: 10px; font-weight: bold;">
                             <div class="form-text">Enter the 6-digit code from your email</div>
+                            <div id="otpError" class="text-danger mt-2" style="display: none;">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                <span id="errorText">Invalid OTP. Please try again.</span>
+                            </div>
                         </div>
                         
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-info btn-lg">
+                            <button type="submit" class="btn btn-info btn-lg" id="submitBtn">
                                 <i class="fas fa-check me-2"></i>Verify & Complete Registration
                             </button>
                         </div>
                     </form>
                     
-                    <div class="mt-4">
-                        <p class="text-muted mb-2">Didn't receive the code?</p>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" id="resendOtp">
-                            <i class="fas fa-redo me-1"></i>Resend OTP
-                        </button>
-                    </div>
+                     
                     
                     <!-- Hidden OTP for demo -->
                     <div class="mt-3 p-3 bg-light rounded">
                         <small class="text-muted">
-                            <strong>Demo OTP:</strong> <span class="text-primary">{{ otps }}</span><br>
+                            <strong>Demo OTP:</strong> <span class="text-primary">{{ otp }}</span><br>
                             In production, this would be sent to your email.
                         </small>
                     </div>
@@ -60,30 +71,85 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const otpInput = document.getElementById('otp');
-    const resendBtn = document.getElementById('resendOtp');
-    
-    // Auto-tab between OTP digits
+    const otpForm = document.getElementById('otpForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const otpError = document.getElementById('otpError');
+    const resendOtp = document.getElementById('resendOtp');
+    const correctOtp = parseInt({{ otp }});  // Views se passed OTP
+
+    // OTP input validation
     otpInput.addEventListener('input', function(e) {
-        if (this.value.length === 6) {
-            this.form.submit();
-        }
+        // Allow only numbers
+        this.value = this.value.replace(/[^0-9]/g, '');
+        
+        // Hide error when user types
+        otpError.style.display = 'none';
+        
+        // Enable/disable submit based on length
+        submitBtn.disabled = this.value.length !== 6;
     });
-    
-    // Resend OTP
-    resendBtn.addEventListener('click', function() {
+
+    // Form submission handling
+    otpForm.addEventListener('submit', function(e) {
+        const enteredOtp = parseInt(otpInput.value.trim());
+        
+        // Client-side OTP validation
+        if (enteredOtp != correctOtp) {
+            e.preventDefault(); // Prevent form submission
+            
+            // Show error message
+            otpError.style.display = 'block';
+            otpInput.focus();
+            otpInput.select();
+            
+            // Shake animation for error
+            otpInput.classList.add('is-invalid');
+            setTimeout(() => {
+                otpInput.classList.remove('is-invalid');
+            }, 500);
+            
+            return false;
+        }
+        
+        // If OTP is correct, show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verifying...';
+    });
+
+    // Resend OTP handling
+    resendOtp.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const originalText = this.innerHTML;
         this.disabled = true;
         this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
         
-        // Simulate API call
+        // Submit the resend form
+        document.getElementById('resendForm').submit();
+        
+        // Re-enable after 5 seconds if still on page
         setTimeout(() => {
-            alert('OTP has been resent to your email!');
             this.disabled = false;
-            this.innerHTML = '<i class="fas fa-redo me-1"></i>Resend OTP';
-        }, 2000);
+            this.innerHTML = originalText;
+        }, 5000);
     });
-    
-    // Focus on OTP input
+
+    // Auto-focus on OTP input
     otpInput.focus();
 });
 </script>
+
+<style>
+.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+</style>
 {% endblock %}

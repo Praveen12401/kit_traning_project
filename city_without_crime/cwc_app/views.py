@@ -1,5 +1,6 @@
 # cwc_app/views.py
 from datetime import timezone
+from django.utils import timezone
 from venv import logger
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import login, logout, authenticate
@@ -124,7 +125,7 @@ def user_register(request):
 
             print('user register ',isvalid, otp)
             if isvalid:
-                return render(request, 'accounts/registration_by_otp.html', {'otps': otp, 'user_email': user_email})
+                return render(request, 'accounts/registration_by_otp.html', {'otp': otp, 'user_email': user_email})
             else:
                 messages.error(request, "Failed to send OTP email. Please check your email address and try again.")
                 return render(request, 'accounts/register.html', {'form': form})
@@ -179,17 +180,22 @@ def user_password_reset(request):
             except User.DoesNotExist:
                 messages.error(request, 'No account found with this email address.')
             
-            return render(request, 'accounts/confurm_otp_page.html', {'otps': otp, 'user_email': user_email})
+            return render(request, 'accounts/confurm_otp_page.html', {'otp': otp, 'user_email': user_email})
     else:
         form = ResetPasswordForm()
     
     return render(request, 'accounts/password_reset.html', {'form': form})
 
+def resend_otp(request):
+    pass
+
 def user_set_new_password(request):
     if request.method == 'POST':
+        
         form = UserSetNewPasswordForm(request.POST)
          
         if form.is_valid():
+           
             new_password = form.cleaned_data['password1']
             confirm_password = form.cleaned_data['password2']
             if new_password != confirm_password:
@@ -212,10 +218,11 @@ def user_set_new_password(request):
             except User.DoesNotExist:
                 messages.error(request, 'User not found')
         else:
+            print('form is not valid')
             messages.error(request, 'Something went wrong!')
             return redirect('register')
     else:
-        form = UserRegistrationForm()
+        form = UserSetNewPasswordForm()
     return render(request, 'accounts/set_new_password.html', {'form': form})
 
 # Home Views
@@ -507,7 +514,7 @@ def user_profile(request):
             messages.success(request, 'Profile updated successfully!')
             return redirect('user_profile')
         else:
-            messages.error(request, 'Please correct the errors below.')
+            messages.error(request, 'Please  correct the errors below.')
     else:
         form = UserProfileForm(instance=request.user)
     

@@ -24,15 +24,17 @@
     box-sizing: border-box;
 }
 
+/* Body with padding for fixed navbar */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #ffffff;
     color: var(--dark-color);
     line-height: 1.6;
     overflow-x: hidden;
+    padding-top: 60px; /* Adjusted for fixed navbar */
 }
 
-/* Enhanced Navbar */
+/* Enhanced Navbar - Fixed Position */
 .navbar {
     background: var(--gradient-primary) !important;
     backdrop-filter: blur(10px);
@@ -40,11 +42,20 @@ body {
     padding: 0.8rem 0;
     transition: all 0.3s ease;
     border-bottom: none;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    width: 100%;
 }
+
+ 
 
 .navbar.scrolled {
     background: rgba(102, 126, 234, 0.95) !important;
     backdrop-filter: blur(20px);
+    padding: 0.6rem 0;
 }
 
 .navbar-brand {
@@ -122,6 +133,7 @@ body {
     margin-top: 0.5rem;
     padding: 0.5rem;
     animation: dropdownFade 0.3s ease;
+    z-index: 1040;
 }
 
 @keyframes dropdownFade {
@@ -170,16 +182,40 @@ body {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-/* Enhanced Hero Section */
+/* Mobile Navbar Collapse */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: var(--gradient-primary);
+        margin-top: 1rem;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .navbar-nav .nav-link {
+        margin: 0.25rem 0;
+    }
+    
+  
+}
+
+/* Main Content Area */
+.main-content {
+    min-height: calc(100vh - 80px);
+    position: relative;
+}
+
+/* Enhanced Hero Section - Adjusted for fixed navbar */
 .hero-section {
     background: var(--gradient-primary);
     color: white;
-    padding: 120px 0 80px;
+    padding: 60px 0 80px; /* Reduced top padding */
     position: relative;
     overflow: hidden;
     min-height: 100vh;
     display: flex;
     align-items: center;
+    margin-top: -20px; /* Compensate for body padding */
 }
 
 .hero-section::before {
@@ -194,6 +230,15 @@ body {
         radial-gradient(circle at 80% 20%, rgba(255, 107, 107, 0.2) 0%, transparent 50%),
         radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.15) 0%, transparent 50%);
     animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .hero-content {
@@ -217,6 +262,17 @@ body {
 @keyframes shine {
     to {
         background-position: 200% center;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -483,14 +539,28 @@ body {
     margin-top: 4rem;
 }
 
+/* Page Content Adjustments for Fixed Navbar */
+.page-content {
+    padding-top: 20px;
+}
+
+.container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 /* Responsive Design */
 @media (max-width: 992px) {
+    body {
+        padding-top: 70px;
+    }
+    
     .hero-title {
         font-size: 2.8rem;
     }
     
     .hero-section {
-        padding: 100px 0 60px;
+        padding: 50px 0 60px;
         text-align: center;
     }
     
@@ -502,9 +572,17 @@ body {
     .navbar-nav .nav-link {
         margin: 0.2rem 0;
     }
+    
+    .main-content {
+        min-height: calc(100vh - 70px);
+    }
 }
 
 @media (max-width: 768px) {
+    body {
+        padding-top: 65px;
+    }
+    
     .hero-title {
         font-size: 2.2rem;
     }
@@ -526,6 +604,10 @@ body {
     
     .dashboard-stat {
         font-size: 2.2rem;
+    }
+    
+    .main-content {
+        min-height: calc(100vh - 65px);
     }
 }
 
@@ -567,4 +649,14 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-dark);
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Ensure all content is properly positioned */
+.container, .container-fluid {
+    position: relative;
 }

@@ -10,8 +10,8 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Fixed Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
                 <i class="fas fa-university me-2"></i>College Grievance System
@@ -32,6 +32,19 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'disciplinary_list' %}">Disciplinary Cases</a>
                             </li>
+                            {% if user.is_admin %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/ ">Admin Panel</a>
+                                </li>
+                            {% elif user.is_faculty_staff %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'faculty_dashboard' %}">Faculty Dashboard</a>
+                                </li>
+                            {% endif %}
+
                         {% endif %}
                     {% endif %}
                 </ul>
@@ -39,7 +52,7 @@
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user me-1"></i> {{ user.username }}
+                                <i class="fas fa-user me-1"></i> {{ user.username|capfirst }}
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a></li>
@@ -65,25 +78,28 @@
         </div>
     </nav>
 
-    <!-- Messages -->
-    <div class="container mt-3">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-
     <!-- Main Content -->
-    <main>
-        {% block content %}{% endblock %}
+    <main class="main-content">
+        <!-- Messages -->
+        <div class="container mt-3">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Page Content -->
+        <div class="page-content">
+            {% block content %}{% endblock %}
+        </div>
     </main>
 
     <!-- Footer -->
-      {% include "partials/footer.html" %}
+   {% include "partials/footer.html" %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/main.js"></script>
