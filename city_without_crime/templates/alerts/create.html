@@ -39,7 +39,7 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="target_faculties" class="form-label">Target Faculties</label>
+                                <label for="target_faculties" class="form-label">Target Faculties/Student</label>
                                 <select class="form-select" id="target_faculties" name="target_faculties" multiple>
                                     {% for faculty in form.target_faculties.field.queryset %}
                                     <option value="{{ faculty.id }}">{{ faculty.faculty_name }}</option>

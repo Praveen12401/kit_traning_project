@@ -28,6 +28,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'grievance_list' %}">My Grievances</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'alert_list' %}">Academic Alert</a>
+                        </li>
                         {% if user.is_faculty_staff or user.is_admin %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'disciplinary_list' %}">Disciplinary Cases</a>
@@ -78,19 +81,22 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Messages -->
-        <div class="container mt-3">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div>
+<!-- Main Content -->
+ 
+    <!-- Fixed Messages Below Navbar -->
+    <div class="messages-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+     
+ 
 
         <!-- Page Content -->
         <div class="page-content">

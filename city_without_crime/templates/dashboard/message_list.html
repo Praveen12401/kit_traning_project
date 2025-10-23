@@ -15,7 +15,7 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 fw-bold text-primary">Message History</h6>
+                    <h6 class="m-0 fw-bold text-white">Message History</h6>
                 </div>
                 <div class="card-body">
                     {% if messages %}
@@ -31,7 +31,18 @@
                                     {% endif %}
                                     {{ message.subject }}
                                 </h6>
-                                <small class="text-muted">{{ message.created_at|timesince }} ago</small>
+                                <div class="d-flex align-items-center">
+                                    <small class="text-muted me-3">{{ message.created_at|timesince }} ago</small>
+                                    {% if message.sender == user.department %}
+                                    <form method="post" action="{% url 'delete_message' message.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                onclick="return confirm('Are you sure you want to delete this message?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
                             </div>
                             <p class="mb-1">{{ message.message|truncatewords:30 }}</p>
                             <div class="d-flex justify-content-between align-items-center">

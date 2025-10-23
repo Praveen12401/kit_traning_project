@@ -94,7 +94,7 @@
         <div class="col-xl-8 col-lg-7 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 fw-bold text-primary">Recent Grievances</h6>
+                    <h6 class="m-0 fw-bold text-white">Recent Grievances</h6>
                     <a href="{% url 'grievance_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
                 </div>
                 <div class="card-body">
@@ -135,7 +135,7 @@
 
         <!-- Sidebar -->
         <div class="col-xl-4 col-lg-5">
-            <!-- Active Alerts -->
+            {% comment %} <!-- Active Alerts -->
             {% if active_alerts %}
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -151,17 +151,17 @@
                     {% endfor %}
                 </div>
             </div>
-            {% endif %}
+            {% endif %} {% endcomment %}
 
             <!-- Quick Actions -->
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 fw-bold text-primary">Quick Actions</h6>
+                    <h6 class="m-0 fw-bold text-white">Quick Actions</h6>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{% url 'create_message' %}" class="btn btn-outline-primary">
-                            <i class="fas fa-envelope me-2"></i>Send Message
+                        <a href="{% url 'message_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-envelope me-2"></i>View Message
                         </a>
                         <a href="{% url 'disciplinary_list' %}" class="btn btn-outline-warning">
                             <i class="fas fa-gavel me-2"></i>Disciplinary Cases

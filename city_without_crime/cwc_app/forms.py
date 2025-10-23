@@ -177,6 +177,7 @@ class CollegeAlertForm(forms.ModelForm):
             'expires_at': 'Expiry Date & Time (optional)',
         }
 
+# forms.py
 class InterFacultyMessageForm(forms.ModelForm):
     class Meta:
         model = InterFacultyMessage
@@ -194,6 +195,21 @@ class InterFacultyMessageForm(forms.ModelForm):
             }),
             'receiver': forms.Select(attrs={'class': 'form-control'}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+        # Filter receivers to exclude the current user's department
+        if self.request and self.request.user.department:
+            self.fields['receiver'].queryset = Faculty.objects.exclude(id=self.request.user.department.id)
+    
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.request and self.request.user.department:
+            instance.sender = self.request.user.department
+        if commit:
+            instance.save()
+        return instance
 
 class GrievanceFeedbackForm(forms.ModelForm):
     class Meta:

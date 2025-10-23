@@ -36,16 +36,25 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="enrollment_number" class="form-label">Enrollment Number</label>
-                                <input type="Number" maxlength="15" class="form-control" id="enrollment_number" name="enrollment_number" 
+                                <input type="text" maxlength="15" class="form-control" id="enrollment_number" name="enrollment_number" 
                                        value="{{ form.enrollment_number.value|default:'' }}" 
                                        placeholder="For students only">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="semester" class="form-label">Semester</label>
-                                <input type="Number" maxlength="1" class="form-control" id="semester" name="semester" 
-                                       value="{{ form.semester.value|default:'' }}" 
-                                       placeholder="e.g., 3rd Semester">
-                            </div>
+    <label for="semester" class="form-label">Semester</label>
+    <select class="form-select" id="semester" name="semester" required>
+        <option value="" disabled selected>Select your semester</option>
+        <option value="1" {% if form.semester.value == "1" %}selected{% endif %}>1st Semester</option>
+        <option value="2" {% if form.semester.value == "2" %}selected{% endif %}>2nd Semester</option>
+        <option value="3" {% if form.semester.value == "3" %}selected{% endif %}>3rd Semester</option>
+        <option value="4" {% if form.semester.value == "4" %}selected{% endif %}>4th Semester</option>
+        <option value="5" {% if form.semester.value == "5" %}selected{% endif %}>5th Semester</option>
+        <option value="6" {% if form.semester.value == "6" %}selected{% endif %}>6th Semester</option>
+        <option value="7" {% if form.semester.value == "7" %}selected{% endif %}>7th Semester</option>
+        <option value="8" {% if form.semester.value == "8" %}selected{% endif %}>8th Semester</option>
+    </select>
+    <div class="form-text">Choose your current semester</div>
+</div>
                         </div>
                         
                         <div class="mb-3">
@@ -61,22 +70,33 @@
                             </select>
                         </div>
                         
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="password1" class="form-label">Password *</label>
-                                <input type="password" class="form-control" id="password1" name="password1" required>
-                                {% if form.password1.errors %}
-                                <div class="text-danger small">{{ form.password1.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="password2" class="form-label">Confirm Password *</label>
-                                <input type="password" class="form-control" id="password2" name="password2" required>
-                                {% if form.password2.errors %}
-                                <div class="text-danger small">{{ form.password2.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label for="password1" class="form-label">Password *</label>
+        <div class="password-toggle-group">
+            <input type="password" class="form-control password-field" id="password1" name="password1" required>
+            <button type="button" class="password-toggle-icon" aria-label="Toggle password visibility">
+                <i class="fas fa-eye"></i>
+            </button>
+        </div>
+        {% if form.password1.errors %}
+        <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <label for="password2" class="form-label">Confirm Password *</label>
+        <div class="password-toggle-group">
+            <input type="password" class="form-control password-field" id="password2" name="password2" required>
+            <button type="button" class="password-toggle-icon" aria-label="Toggle password visibility">
+                <i class="fas fa-eye"></i>
+            </button>
+        </div>
+        {% if form.password2.errors %}
+        <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+        {% endif %}
+    </div>
+</div>
                         
                         <div class="form-check mb-4">
                             <input class="form-check-input" type="checkbox" id="terms" required>

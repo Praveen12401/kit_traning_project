@@ -19,6 +19,7 @@ urlpatterns = [
     # Messages
     path('messages/', views.message_list, name='message_list'),
     path('messages/create/', views.create_message, name='create_message'),
+    path('messages/delete/<int:message_id>/', views.delete_message, name='delete_message'),
     
     # Grievances
     path('grievances/', views.grievance_list, name='grievance_list'),
@@ -40,6 +41,7 @@ urlpatterns = [
     # College Alerts
     path('alerts/', views.alert_list, name='alert_list'),
     path('alerts/create/', views.create_alert, name='create_alert'),
+    path('alerts/delete/<int:alert_id>/', views.delete_alert, name='delete_alert'),
     
     # Dashboards
     path('admin/dashboard/', views.admin_dashboard, name='admin_dashboard'),

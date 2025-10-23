@@ -129,7 +129,7 @@ class InterFacultyMessage(models.Model):  # StationMessage -> InterFacultyMessag
     sender = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='received_messages')
     subject = models.CharField(max_length=200)
-    message = models.TextField()
+    message = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
     

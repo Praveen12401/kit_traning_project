@@ -191,17 +191,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Close mobile menu when clicking on a link
-    const navLinks = document.querySelectorAll('.nav-link');
-    const navbarCollapse = document.querySelector('.navbar-collapse');
+    // const navLinks = document.querySelectorAll('.nav-link');
+    // const navbarCollapse = document.querySelector('.navbar-collapse');
     
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (navbarCollapse.classList.contains('show')) {
-                const bsCollapse = new bootstrap.Collapse(navbarCollapse);
-                bsCollapse.hide();
-            }
-        });
-    });
+    // navLinks.forEach(link => {
+    //     link.addEventListener('click', () => {
+    //         if (navbarCollapse.classList.contains('show')) {
+    //             const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+    //             bsCollapse.hide();
+    //         }
+    //     });
+    // });
 
     // Smooth scrolling for anchor links (adjust for fixed navbar)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -214,6 +214,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     top: offsetTop,
                     behavior: 'smooth'
                 });
+            }
+        });
+    });
+});
+
+
+
+// Simple Password Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.password-toggle-icon');
+    
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            const icon = this.querySelector('i');
+            
+            // Toggle password field type
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
         });
     });

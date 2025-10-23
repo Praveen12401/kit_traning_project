@@ -32,6 +32,7 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     padding-top: 60px; /* Adjusted for fixed navbar */
+    
 }
 
 /* Enhanced Navbar - Fixed Position */
@@ -48,12 +49,13 @@ body {
     right: 0;
     z-index: 1030;
     width: 100%;
+    font-size: 19px;
 }
 
  
 
 .navbar.scrolled {
-    background: rgba(102, 126, 234, 0.95) !important;
+    /* background: rgba(102, 126, 234, 0.95) !important; */
     backdrop-filter: blur(20px);
     padding: 0.6rem 0;
 }
@@ -159,7 +161,7 @@ body {
 .dropdown-item:hover {
     background: var(--primary-color);
     color: white;
-    transform: translateX(5px);
+    /* transform: translateX(5px); */
 }
 
 .dropdown-item:active {
@@ -182,21 +184,162 @@ body {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-/* Mobile Navbar Collapse */
-@media (max-width: 991.98px) {
-    .navbar-collapse {
-        background: var(--gradient-primary);
-        margin-top: 1rem;
-        border-radius: 12px;
-        padding: 1rem;
-        box-shadow: var(--shadow-lg);
+/* Responsive adjustments */
+@media (max-width: 768px) {
+   
+    .hero-section .col-md-6 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .hero-section img {
+        max-width: 80%;
+    }
+    
+    /* Mobile navbar font size */
+    .navbar-brand {
+        font-size: 1.6rem !important;
     }
     
     .navbar-nav .nav-link {
-        margin: 0.25rem 0;
+        font-size: 1.1rem !important;
     }
     
-  
+    body {
+        padding-top: 70px;
+    }
+}
+
+
+
+/* Password Field Hide/Show Toggle Styles */
+.password-toggle-group {
+    position: relative;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle-icon:hover {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: var(--primary-color);
+}
+
+.password-toggle-icon:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* Adjust input padding to accommodate the toggle icon */
+.password-field {
+    padding-right: 50px !important;
+}
+
+/* Mobile-specific password toggle styles */
+@media (max-width: 768px) {
+    .password-toggle-icon {
+        right: 12px;
+        padding: 10px;
+        min-width: 44px; /* Better touch target */
+        min-height: 44px;
+    }
+    
+    .password-field {
+        padding-right: 55px !important;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}
+
+/* Focus states for accessibility */
+.password-toggle-icon:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Animation for icon change */
+.password-toggle-icon i {
+    transition: transform 0.3s ease;
+}
+
+.password-toggle-icon:hover i {
+    transform: scale(1.1);
+}
+
+
+/* Fixed Messages Position */
+.messages-container {
+    position: fixed;
+    top: 85px; /* Adjust based on your navbar height */
+    left: 0;
+    right: 0;
+    z-index: 1029; /* Below navbar (1030) but above content */
+    padding: 0 15px;
+    pointer-events: none; /* Allow clicks to pass through */
+   
+}
+
+ 
+
+.messages-container .alert {
+    pointer-events: auto; /* Re-enable clicks for alerts */
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Adjust body padding to account for fixed messages */
+body {
+    padding-top: 100px; /* Navbar height */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .messages-container {
+        top: 105px;
+        padding: 0 10px;
+    }
+    
+    body {
+        padding-top: 65px;
+    }
+}
+
+@media (max-width: 576px) {
+    .messages-container {
+        top: 100px;
+        padding: 0 5px;
+    }
+    
+    .messages-container .alert {
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+    }
 }
 
 /* Main Content Area */
@@ -551,6 +694,15 @@ body {
 
 /* Responsive Design */
 @media (max-width: 992px) {
+     .dropdown-item {
+    color: var(--dark-color);
+    font-weight: 500;
+    padding: 0.05rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    flex-direction: row;
+}
     body {
         padding-top: 70px;
     }
@@ -565,8 +717,11 @@ body {
     }
     
     .navbar-nav {
-        text-align: center;
+        text-align: left;
         padding: 1rem 0;
+          
+        float:inline-start;
+         
     }
     
     .navbar-nav .nav-link {
@@ -575,6 +730,7 @@ body {
     
     .main-content {
         min-height: calc(100vh - 70px);
+        
     }
 }
 

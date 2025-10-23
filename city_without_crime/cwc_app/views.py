@@ -253,6 +253,99 @@ def message_list(request):
     
     return render(request, 'dashboard/message_list.html', {'messages': messages})
 
+
+@login_required
+def create_alert(request):
+    if not (request.user.is_faculty_staff or request.user.is_admin):
+        messages.error(request, 'You are not authorized to perform this action.')
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = CollegeAlertForm(request.POST)
+        if form.is_valid():
+            alert = form.save(commit=False)
+            alert.created_by = request.user
+            alert.save()
+            form.save_m2m()  # Save many-to-many relationships
+            messages.success(request, 'College alert created successfully!')
+            return redirect('alert_list')
+    else:
+        form = CollegeAlertForm()
+    return render(request, 'alerts/create.html', {'form': form})
+
+@login_required
+def delete_alert(request, alert_id):
+    if not request.user.is_faculty_staff and not request.user.is_admin:
+        messages.error(request, 'You are not authorized to delete alerts.')
+        return redirect('home')
+    
+    try:
+        alert = get_object_or_404(CollegeAlert, id=alert_id)
+        
+        # Check if user is the creator or admin
+        if alert.created_by == request.user or request.user.is_admin:
+            alert.delete()
+            messages.success(request, 'Alert deleted successfully!')
+        else:
+            messages.error(request, 'You can only delete alerts created by you.')
+            
+    except Exception as e:
+        messages.error(request, f'Error deleting alert: {str(e)}')
+    
+    return redirect('alert_list')
+
+# views.py
+@login_required
+def create_message(request):
+    if not request.user.is_faculty_staff:
+        messages.error(request, 'You are not authorized to perform this action.')
+        return redirect('home')
+    
+    # Check if user has a department assigned
+    if not request.user.department:
+        messages.error(request, 'Your account is not associated with any faculty department. Please contact administrator.')
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = InterFacultyMessageForm(request.POST, request=request)
+        if form.is_valid():
+            try:
+                message = form.save()
+                messages.success(request, 'Message sent successfully!')
+                return redirect('message_list')
+            except Exception as e:
+                messages.error(request, f'Error sending message: {str(e)}')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = InterFacultyMessageForm(request=request)
+    
+    return render(request, 'messages/create.html', {'form': form})
+
+
+@login_required
+def delete_message(request, message_id):
+    if not request.user.is_faculty_staff:
+        messages.error(request, 'You are not authorized to perform this action.')
+        return redirect('home')
+    
+    try:
+        message = InterFacultyMessage.objects.get(id=message_id)
+        
+        # Check if the current user is the sender
+        if message.sender == request.user.department:
+            message.delete()
+            messages.success(request, 'Message deleted successfully!')
+        else:
+            messages.error(request, 'You can only delete messages sent by you.')
+            
+    except InterFacultyMessage.DoesNotExist:
+        messages.error(request, 'Message not found.')
+    except Exception as e:
+        messages.error(request, f'Error deleting message: {str(e)}')
+    
+    return redirect('message_list')
+
 # Grievance update for faculty and admin
 def update_grievance_status(request, pk):
     if not (request.user.is_faculty_staff or request.user.is_admin):
@@ -402,43 +495,6 @@ def alert_list(request):
     alerts = CollegeAlert.objects.filter(is_active=True).order_by('-created_at')
     return render(request, 'alerts/list.html', {'alerts': alerts})
 
-@login_required
-def create_alert(request):
-    if not (request.user.is_faculty_staff or request.user.is_admin):
-        messages.error(request, 'You are not authorized to perform this action.')
-        return redirect('home')
-    
-    if request.method == 'POST':
-        form = CollegeAlertForm(request.POST)
-        if form.is_valid():
-            alert = form.save(commit=False)
-            alert.created_by = request.user
-            alert.save()
-            form.save_m2m()  # Save many-to-many relationships
-            messages.success(request, 'College alert created successfully!')
-            return redirect('alert_list')
-    else:
-        form = CollegeAlertForm()
-    return render(request, 'alerts/create.html', {'form': form})
-
-# Inter-Faculty Message Views
-@login_required
-def create_message(request):
-    if not request.user.is_faculty_staff:
-        messages.error(request, 'You are not authorized to perform this action.')
-        return redirect('home')
-    
-    if request.method == 'POST':
-        form = InterFacultyMessageForm(request.POST)
-        if form.is_valid():
-            message = form.save(commit=False)
-            message.sender = request.user.department
-            message.save()
-            messages.success(request, 'Message sent successfully!')
-            return redirect('message_list')
-    else:
-        form = InterFacultyMessageForm()
-    return render(request, 'messages/create.html', {'form': form})
 
 # Dashboard Views
 @login_required
