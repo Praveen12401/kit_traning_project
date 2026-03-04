@@ -139,8 +139,10 @@ http://127.0.0.1:8000/
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/5abbcdfc-b0b3-4b27-9dc7-5807b4f448bf" />
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/c763e8f3-cd41-47d2-98ae-32ced88c25c2" />
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/96ed8760-a7f3-46dd-88ce-a7c80ea1398e" />
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/99fe4f75-5400-41df-9764-0b7410657436" />
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/4d9fe585-bdcf-41c3-bd2a-dd974073eb11" />
+<img width="1359" height="486" alt="image" src="https://github.com/user-attachments/assets/3de1a3c5-afe1-44b9-b392-55140ed6fbf3" />
+<img width="1364" height="493" alt="image" src="https://github.com/user-attachments/assets/794e94cb-09a9-4bbf-99c3-3818697ac0f4" />
+<img width="1364" height="479" alt="image" src="https://github.com/user-attachments/assets/63cd4e26-5f53-4bb5-8622-de0aaa3c1f29" />
+
 
 
 
