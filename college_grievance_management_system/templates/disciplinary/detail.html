@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Case Details - College Grievance System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- LEFT SIDE: CASE DETAILS -->
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Disciplinary Case</h4>
+                        <span class="badge bg-{% if case.status == 'PENDING' %}warning
+                                              {% elif case.status == 'UNDER_INVESTIGATION' %}info
+                                              {% elif case.status == 'RESOLVED' %}success
+                                              {% else %}primary{% endif %} fs-6">
+                            {{ case.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            {% if case.photo %}
+                            <img src="{{ case.photo.url }}" alt="{{ case.name }}"
+                                 class="rounded-circle mb-3" width="120" height="120"
+                                 style="object-fit: cover;">
+                            {% else %}
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3" 
+                                 style="width: 120px; height: 120px;">
+                                <i class="fas fa-user fa-3x text-white"></i>
+                            </div>
+                            {% endif %}
+                            <h5>{{ case.name }}</h5>
+                            <p class="text-muted">{{ case.enrollment_number|default:"No Enrollment" }}</p>
+                        </div>
+
+                        <div class="col-md-8">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="30%">Department:</th>
+                                    <td>{{ case.department.department }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status:</th>
+                                    <td>
+                                        <span class="badge bg-{% if case.status == 'PENDING' %}warning
+                                                              {% elif case.status == 'UNDER_INVESTIGATION' %}info
+                                                              {% elif case.status == 'RESOLVED' %}success
+                                                              {% else %}primary{% endif %}">
+                                            {{ case.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Reported By:</th>
+                                    <td>{{ case.reported_by.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Reported On:</th>
+                                    <td>{{ case.created_at|date:"M d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Last Updated:</th>
+                                    <td>{{ case.updated_at|date:"M d, Y H:i" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="text-muted">Disciplinary Issue</h6>
+                        <div class="p-3 bg-light rounded">
+                            {{ case.issue_description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE: ACTIONS + PHOTO UPDATE -->
+        <div class="col-lg-4">
+            <!-- Quick Actions Card -->
+            <div class="card shadow">
+                <div class="card-header bg-light py-3">
+                    <h6 class="mb-0">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'disciplinary_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to List
+                        </a>
+                        {% if request.user.is_faculty_staff or request.user.is_admin %}
+                        <a href="{% url 'create_disciplinary' %}" class="btn btn-outline-warning">
+                            <i class="fas fa-plus me-2"></i>Add New Case
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo Update Card -->
+            {% if user.is_authenticated %}
+                {% if user.is_admin or user == case.reported_by %}
+
+            <div class="card shadow mt-3">
+                <div class="card-header bg-light py-3">
+                    <h6 class="mb-0">Update Photo</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'update_case_photo' case.id %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Select New Photo</label>
+                            <input type="file" name="photo" class="form-control" accept="image/*" required>
+                            <div class="form-text">Recommended: Clear face photo, JPG/PNG, under 2MB.</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="fas fa-upload me-2"></i>Update Photo
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

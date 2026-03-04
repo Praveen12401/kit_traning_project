@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Grievance - College Grievance System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Submit New Grievance</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data" id="grievanceForm">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="faculty" class="form-label">Select Faculty/Department *</label>
+                                    <select class="form-select" id="faculty" name="faculty" required>
+                                        <option value="">Choose faculty...</option>
+                                        {% for faculty in form.faculty.field.queryset %}
+                                        <option value="{{ faculty.id }}" 
+                                                {% if form.faculty.value == faculty.id %}selected{% endif %}>
+                                            {{ faculty.faculty_name }} - {{ faculty.department }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if form.faculty.errors %}
+                                    <div class="text-danger small">{{ form.faculty.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category *</label>
+                                    <select class="form-select" id="category" name="category" required>
+                                        <option value="">Select category...</option>
+                                        <option value="ACADEMIC" {% if form.category.value == 'ACADEMIC' %}selected{% endif %}>Academic Issue</option>
+                                        <option value="INFRASTRUCTURE" {% if form.category.value == 'INFRASTRUCTURE' %}selected{% endif %}>Infrastructure Problem</option>
+                                        <option value="FACULTY" {% if form.category.value == 'FACULTY' %}selected{% endif %}>Faculty Related</option>
+                                        <option value="ADMINISTRATION" {% if form.category.value == 'ADMINISTRATION' %}selected{% endif %}>Administration Issue</option>
+                                        <option value="HOSTEL" {% if form.category.value == 'HOSTEL' %}selected{% endif %}>Hostel Issue</option>
+                                        <option value="LIBRARY" {% if form.category.value == 'LIBRARY' %}selected{% endif %}>Library Issue</option>
+                                        <option value="OTHER" {% if form.category.value == 'OTHER' %}selected{% endif %}>Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Title and Priority -->
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Grievance Title *</label>
+                                    <input type="text" class="form-control" id="title" name="title" 
+                                           value="{{ form.title.value|default:'' }}" 
+                                           placeholder="Brief title describing your issue" required>
+                                    {% if form.title.errors %}
+                                    <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="priority" class="form-label">Priority</label>
+                                    <select class="form-select" id="priority" name="priority">
+                                        <option value="MEDIUM" {% if form.priority.value == 'MEDIUM' %}selected{% endif %}>Medium</option>
+                                        <option value="LOW" {% if form.priority.value == 'LOW' %}selected{% endif %}>Low</option>
+                                        <option value="HIGH" {% if form.priority.value == 'HIGH' %}selected{% endif %}>High</option>
+                                        <option value="URGENT" {% if form.priority.value == 'URGENT' %}selected{% endif %}>Urgent</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label">Detailed Description *</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="6" placeholder="Please provide detailed information about your grievance..."
+                                      required>{{ form.description.value|default:'' }}</textarea>
+                            <div class="form-text">
+                                Be specific about the issue, when it occurred, and what resolution you expect.
+                            </div>
+                            {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Location -->
+                        <div class="mb-4">
+                            <label for="location" class="form-label">Location/Place of Issue</label>
+                            <input type="text" class="form-control" id="location" name="location" 
+                                   value="{{ form.location.value|default:'' }}" 
+                                   placeholder="e.g., Room 101, Computer Lab, Library Ground Floor">
+                            <div class="form-text">
+                                Specify where this issue occurred (building, room number, etc.)
+                            </div>
+                        </div>
+
+                        <!-- File Uploads -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="supporting_docs" class="form-label">Supporting Documents</label>
+                                    <input type="file" class="form-control" id="supporting_docs" name="supporting_docs">
+                                    <div class="form-text">
+                                        Upload any relevant documents (PDF, Word, etc.)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="photo_evidence" class="form-label">Photo Evidence</label>
+                                    <input type="file" class="form-control" id="photo_evidence" name="photo_evidence" 
+                                           accept="image/*">
+                                    <div class="form-text">
+                                        Upload photos related to your grievance
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div class="mb-4" id="filePreview" style="display: none;">
+                            <h6 class="text-muted">File Previews:</h6>
+                            <div id="previewContainer"></div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'grievance_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to List
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Grievance
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('grievanceForm');
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    const previewContainer = document.getElementById('previewContainer');
+    const filePreview = document.getElementById('filePreview');
+
+    // File preview functionality
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
+            let hasFiles = false;
+
+            fileInputs.forEach(inp => {
+                if (inp.files.length > 0) {
+                    hasFiles = true;
+                    const file = inp.files[0];
+                    const fileElement = document.createElement('div');
+                    fileElement.className = 'alert alert-info d-flex justify-content-between align-items-center mb-2';
+                    
+                    if (file.type.startsWith('image/')) {
+                        fileElement.innerHTML = `
+                            <div>
+                                <i class="fas fa-image me-2"></i>
+                                ${file.name} (${(file.size / 1024).toFixed(1)} KB)
+                            </div>
+                            <button type="button" class="btn-close" onclick="this.parentElement.remove(); checkFiles();"></button>
+                        `;
+                    } else {
+                        fileElement.innerHTML = `
+                            <div>
+                                <i class="fas fa-file me-2"></i>
+                                ${file.name} (${(file.size / 1024).toFixed(1)} KB)
+                            </div>
+                            <button type="button" class="btn-close" onclick="this.parentElement.remove(); checkFiles();"></button>
+                        `;
+                    }
+                    
+                    previewContainer.appendChild(fileElement);
+                }
+            });
+
+            filePreview.style.display = hasFiles ? 'block' : 'none';
+        });
+    });
+
+    // Character counter for description
+    const description = document.getElementById('description');
+    const charCounter = document.createElement('div');
+    charCounter.className = 'form-text text-end';
+    description.parentNode.appendChild(charCounter);
+
+    description.addEventListener('input', function() {
+        const count = this.value.length;
+        charCounter.textContent = `${count}/1000 characters`;
+        
+        if (count > 1000) {
+            charCounter.classList.add('text-danger');
+        } else {
+            charCounter.classList.remove('text-danger');
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+    });
+});
+
+function checkFiles() {
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    const previewContainer = document.getElementById('previewContainer');
+    const filePreview = document.getElementById('filePreview');
+    
+    if (previewContainer.children.length === 0) {
+        filePreview.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

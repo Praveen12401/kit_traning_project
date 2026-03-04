@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Messages - College Grievance System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 text-primary">Inter-Faculty Messages</h1>
+        <a href="{% url 'create_message' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>New Message
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-white">Message History</h6>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                    <div class="list-group">
+                        {% for message in messages %}
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">
+                                    {% if message.sender == user.department %}
+                                        <span class="badge bg-success me-2">Sent</span>
+                                    {% else %}
+                                        <span class="badge bg-primary me-2">Received</span>
+                                    {% endif %}
+                                    {{ message.subject }}
+                                </h6>
+                                <div class="d-flex align-items-center">
+                                    <small class="text-muted me-3">{{ message.created_at|timesince }} ago</small>
+                                    {% if message.sender == user.department %}
+                                    <form method="post" action="{% url 'delete_message' message.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                onclick="return confirm('Are you sure you want to delete this message?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p class="mb-1">{{ message.message|truncatewords:30 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    From: <strong>{{ message.sender.faculty_name }}</strong>
+                                    To: <strong>{{ message.receiver.faculty_name }}</strong>
+                                </small>
+                                {% if not message.is_read and message.receiver == user.department %}
+                                <span class="badge bg-warning">New</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-envelope fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No messages found.</p>
+                        <a href="{% url 'create_message' %}" class="btn btn-primary">
+                            Send Your First Message
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
