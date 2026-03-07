@@ -165,6 +165,10 @@ http://127.0.0.1:8000/
 ---
 
 ## 📸 Screenshots
+<img width="1353" height="654" alt="image" src="https://github.com/user-attachments/assets/ebd89502-481e-4682-a019-ccdc4da8ebdf" />
+<img width="1358" height="446" alt="image" src="https://github.com/user-attachments/assets/e2a8d285-73c3-4232-8968-6e0215e28715" />
+<img width="1363" height="660" alt="image" src="https://github.com/user-attachments/assets/e3244c0b-2ed2-49fa-9c6f-ea15cb02ca42" />
+<img width="1355" height="587" alt="image" src="https://github.com/user-attachments/assets/8c644587-427c-4529-a717-7cc85a0443cd" />
 
 <img width="1363" height="761" alt="image" src="https://github.com/user-attachments/assets/40854915-5c65-471d-a399-8f766de0950a" />
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/4084713a-97ea-4909-abc8-694a535ef659" />
