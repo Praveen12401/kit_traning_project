@@ -49,20 +49,52 @@ The system helps administrators and faculty manage grievances efficiently and en
 ## 📂 Project Structure
 
 ```
-college_grievance_management_system/
+COLLEGE_GRIEVANCE_MANAGEMENT_SYSTEM
 │
-├── grievance_app/
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
-│   ├── forms.py
-│   ├── admin.py
+├── college_grievance_management_system
+│ ├── init.py
+│ ├── asgi.py
+│ ├── settings.py
+│ ├── urls.py
+│ └── wsgi.py
 │
-├── templates/
-├── static/
-├── media/
+├── grievance_app
+│ ├── migrations
+│ ├── management
+│ │ └── commands
+│ ├── init.py
+│ ├── admin.py
+│ ├── apps.py
+│ ├── backends.py
+│ ├── forms.py
+│ ├── middlewares.py
+│ ├── models.py
+│ ├── tests.py
+│ ├── urls.py
+│ ├── utils.py
+│ └── views.py
+│
+├── templates
+│ ├── accounts
+│ ├── alerts
+│ ├── dashboard
+│ ├── disciplinary
+│ ├── email
+│ ├── faculties
+│ ├── grievances
+│ ├── home
+│ ├── messages
+│ ├── partials
+│ ├── base.html
+│ └── under_construction.html
+│
+├── static
+├── media
+│
+├── .env
+├── db.sqlite3
 ├── manage.py
-└── db.sqlite3
+└── requirements.txt
 ```
 
 ---
