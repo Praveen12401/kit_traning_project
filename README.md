@@ -52,17 +52,11 @@ The system helps administrators and faculty manage grievances efficiently and en
 COLLEGE_GRIEVANCE_MANAGEMENT_SYSTEM
 │
 ├── college_grievance_management_system
-│ ├── init.py
-│ ├── asgi.py
 │ ├── settings.py
 │ ├── urls.py
 │ └── wsgi.py
 │
 ├── grievance_app
-│ ├── migrations
-│ ├── management
-│ │ └── commands
-│ ├── init.py
 │ ├── admin.py
 │ ├── apps.py
 │ ├── backends.py
@@ -144,15 +138,17 @@ http://127.0.0.1:8000/
 
 ### Student
 
+* Registration and Login
 * Submit grievance
 * Track grievance status
 * Provide feedback after resolution
-* Accadmic Alert see
+* Accadmic Alert & Notice see
 
 ### Faculty
 
 * View department grievances
 * Respond to student issues
+* Chat With Faculty
 * College Alerts and Notice Send
 
 ### Admin
